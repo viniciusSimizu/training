@@ -1,0 +1,46 @@
+CREATE TABLE Course (
+    Code INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    Name VARCHAR(100) NOT NULL,
+    Description VARCHAR(4000) NOT NULL,
+    Duration INT NOT NULL
+);
+
+CREATE TABLE Employee (
+    Code INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    Name VARCHAR(200) NOT NULL,
+    Cpf CHAR(11) NOT NULL,
+    Birth_Day DATE NOT NULL,
+    Role VARCHAR(200) NOT NULL,
+    Admission DATE NOT NULL,
+    Status BIT NOT NULL
+);
+
+CREATE TABLE Class (
+    Code INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    Start DATE NOT NULL,
+    End DATE NOT NULL,
+    Location VARCHAR(200),
+    Course_Code INT NOT NULL
+);
+
+CREATE TABLE Class_Participants (
+    Code INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    Class_Code INT NOT NULL,
+    Employee_Code INT NOT NULL
+);
+
+ALTER TABLE Class
+ADD CONSTRAINT FK_ClassCourse
+FOREIGN KEY (Course_Code)
+REFERENCES Course (Code)
+ON DELETE CASCADE;
+
+ALTER TABLE Class_Participants
+ADD CONSTRAINT FK_ClassParticipantClass
+FOREIGN KEY (Class_Code)
+REFERENCES Class (Code);
+
+ALTER TABLE Class_Participants
+ADD CONSTRAINT FK_ClassParticipantEmployee
+FOREIGN KEY (Employee_Code)
+REFERENCES Employee (Code);
