@@ -10,12 +10,14 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.linkedrh.training.course.dtos.CourseCreateDTO;
+import com.linkedrh.training.course.dtos.CourseUpdateDTO;
 import com.linkedrh.training.shared.db.DatabaseConnection;
 
 @Repository
 public class CourseRepository {
 
-	private String table = "Course";
+	private String table = "course";
 
 	@Autowired
 	private DatabaseConnection dbConnection;
@@ -24,63 +26,78 @@ public class CourseRepository {
 		Connection conn = this.dbConnection.getConnection();
 		String query = String.format("""
 				SELECT
-					Code, Duration, Name, Description
-				FROM Course
+					code, duration, name, description
+				FROM course
 				""", this.table);
 
 		PreparedStatement pstmt = conn.prepareStatement(query);
 		ResultSet resultSet = pstmt.executeQuery();
 
 		List<Course> courses = new ArrayList<>();
-
 		while (resultSet.next()) {
-			int code = resultSet.getInt("Code");
-			int duration = resultSet.getInt("Duration");
-			String name = resultSet.getString("Name");
-			String description = resultSet.getString("Description");
+			int code = resultSet.getInt("code");
+			int duration = resultSet.getInt("duration");
+			String name = resultSet.getString("name");
+			String description = resultSet.getString("description");
 			Course course = new Course(code, duration, name, description);
 			courses.add(course);
 		}
 
-		conn.close();
-		pstmt.close();
 		resultSet.close();
+		pstmt.close();
+		conn.close();
 
 		return courses;
 	}
 
-	public void create(Course course) throws SQLException {
+	public void create(CourseCreateDTO body) throws SQLException {
 		Connection conn = this.dbConnection.getConnection();
 		String query = String.format("""
 				INSERT INTO %s
-				(Name, Description, Duration)
+				(name, description, duration)
 				VALUES (?, ?, ?)
 				""", this.table);
 
 		PreparedStatement pstmt = conn.prepareStatement(query);
-		pstmt.setString(1, course.name());
-		pstmt.setString(2, course.description());
-		pstmt.setInt(3, course.duration());
-
+		pstmt.setString(1, body.name);
+		pstmt.setString(2, body.description);
+		pstmt.setInt(3, body.duration);
 		pstmt.executeUpdate();
+
 		pstmt.close();
 		conn.close();
 	}
 
-	public void update(Course course) throws SQLException {
+	public void update(int code, CourseUpdateDTO course) throws SQLException {
 		Connection conn = this.dbConnection.getConnection();
 		String query = String.format("""
 				UPDATE %s
-				SET Name = ?, Description = ?, Duration = ?
-				WHERE Code = ?
+				SET name = ?, description = ?, duration = ?
+				WHERE code = ?
 				""", this.table);
 
 		PreparedStatement pstmt = conn.prepareStatement(query);
-		pstmt.setString(1, course.name());
-		pstmt.setString(2, course.description());
-		pstmt.setInt(3, course.duration());
-
+		pstmt.setString(1, course.name);
+		pstmt.setString(2, course.description);
+		pstmt.setInt(3, course.duration);
+		pstmt.setInt(4, code);
 		pstmt.executeUpdate();
+
+		pstmt.close();
+		conn.close();
+	}
+
+	public void delete(int code) throws SQLException {
+		Connection conn = this.dbConnection.getConnection();
+		String query = String.format("""
+				DELETE FROM %s
+				WHERE code = ?
+				""", this.table);
+
+		PreparedStatement pstmt = conn.prepareStatement(query);
+		pstmt.setInt(1, code);
+		pstmt.executeUpdate();
+
 		pstmt.close();
 		conn.close();
 	}
