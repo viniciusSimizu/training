@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,82 +24,128 @@ public class CourseRepository {
 	private DatabaseConnection dbConnection;
 
 	public List<Course> list() throws SQLException {
-		Connection conn = this.dbConnection.getConnection();
-		String query = String.format("""
-				SELECT
-					code, duration, name, description
-				FROM course
-				""", this.table);
-
-		PreparedStatement pstmt = conn.prepareStatement(query);
-		ResultSet resultSet = pstmt.executeQuery();
-
+		String query = """
+			SELECT
+			code, duration, name, description
+			FROM %s
+			""";
 		List<Course> courses = new ArrayList<>();
-		while (resultSet.next()) {
-			int code = resultSet.getInt("code");
-			int duration = resultSet.getInt("duration");
-			String name = resultSet.getString("name");
-			String description = resultSet.getString("description");
-			Course course = new Course(code, duration, name, description);
-			courses.add(course);
-		}
 
-		resultSet.close();
-		pstmt.close();
-		conn.close();
+		try (
+				Connection conn = this.dbConnection.getConnection();
+				Statement pstmt = conn.createStatement();
+				ResultSet result = pstmt.executeQuery(String.format(query, this.table));
+			) 
+		{
+			while (result.next()) {
+				int code = result.getInt("code");
+				int duration = result.getInt("duration");
+				String name = result.getString("name");
+				String description = result.getString("description");
+
+				Course course = new Course(code, duration, name, description);
+				courses.add(course);
+			}
+		}
 
 		return courses;
 	}
 
-	public void create(CourseCreateDTO body) throws SQLException {
-		Connection conn = this.dbConnection.getConnection();
-		String query = String.format("""
-				INSERT INTO %s
-				(name, description, duration)
-				VALUES (?, ?, ?)
-				""", this.table);
+	public int create(CourseCreateDTO course) throws SQLException {
+		String query = """
+			INSERT INTO %s
+			(name, description, duration)
+			VALUES (?, ?, ?)
+			RETURNING code
+			""";
 
-		PreparedStatement pstmt = conn.prepareStatement(query);
-		pstmt.setString(1, body.name);
-		pstmt.setString(2, body.description);
-		pstmt.setInt(3, body.duration);
-		pstmt.executeUpdate();
+		int courseCode;
 
-		pstmt.close();
-		conn.close();
+		try (
+				Connection conn = this.dbConnection.getConnection();
+				PreparedStatement pstmt = conn.prepareStatement(String.format(query, this.table));
+			)
+		{
+			pstmt.setString(1, course.name);
+			pstmt.setString(2, course.description);
+			pstmt.setInt(3, course.duration);
+
+			ResultSet result = pstmt.executeQuery();
+
+			result.next();
+			courseCode = result.getInt("code");
+
+			result.close();
+		}
+
+		return courseCode;
 	}
 
 	public void update(int code, CourseUpdateDTO course) throws SQLException {
-		Connection conn = this.dbConnection.getConnection();
-		String query = String.format("""
-				UPDATE %s
-				SET name = ?, description = ?, duration = ?
-				WHERE code = ?
-				""", this.table);
+		String query = """
+			UPDATE %s
+			SET name = ?, description = ?, duration = ?
+			WHERE code = ?
+			""";
 
-		PreparedStatement pstmt = conn.prepareStatement(query);
-		pstmt.setString(1, course.name);
-		pstmt.setString(2, course.description);
-		pstmt.setInt(3, course.duration);
-		pstmt.setInt(4, code);
-		pstmt.executeUpdate();
-
-		pstmt.close();
-		conn.close();
+		try (
+				Connection conn = this.dbConnection.getConnection();
+				PreparedStatement pstmt = conn.prepareStatement(String.format(query, this.table));
+			)
+		{
+			pstmt.setString(1, course.name);
+			pstmt.setString(2, course.description);
+			pstmt.setInt(3, course.duration);
+			pstmt.setInt(4, code);
+			pstmt.executeUpdate();
+		}
 	}
 
 	public void delete(int code) throws SQLException {
-		Connection conn = this.dbConnection.getConnection();
-		String query = String.format("""
-				DELETE FROM %s
-				WHERE code = ?
-				""", this.table);
+		String query = """
+			DELETE FROM %s
+			WHERE code = ?
+			""";
 
-		PreparedStatement pstmt = conn.prepareStatement(query);
-		pstmt.setInt(1, code);
-		pstmt.executeUpdate();
+		try (
+				Connection conn = this.dbConnection.getConnection();
+				PreparedStatement pstmt = conn.prepareStatement(String.format(query, this.table));
+			)
+		{
+			pstmt.setInt(1, code);
+			pstmt.executeUpdate();
+		}	
+	}
 
-		pstmt.close();
-		conn.close();
+	public Course findByCode(int courseCode) throws SQLException {
+		String query = """
+			SELECT
+				name, description, duration
+			FROM %s
+			WHERE code = ?
+			""";
+
+		Course course = null;
+
+		try (
+				Connection conn = this.dbConnection.getConnection();
+				PreparedStatement pstmt = conn.prepareStatement(String.format(query, this.table));
+			)
+		{
+			pstmt.setInt(1, courseCode);
+
+			ResultSet result = pstmt.executeQuery();
+
+			if (result.next()) {
+				int duration = result.getInt("duration");
+				String name = result.getString("name");
+				String description = result.getString("description");
+				course = new Course(courseCode, duration, name, description);
+			}
+
+			result.close();
+		}
+
+		return course;
 	}
 }

@@ -1,6 +1,5 @@
 package com.linkedrh.training.course;
 
-import java.sql.SQLException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,27 +14,29 @@ public class CourseService {
 	@Autowired
 	CourseRepository repository;
 
-	public List<Course> list() throws SQLException {
-		return this.repository.list();
+	public List<Course> list() throws Exception {
+		try {
+			return this.repository.list();
+		} catch(Exception err) {
+
+			throw new Exception("Não foi possível listar os cursos disponíveis");
+		}
 	}
 
-	public void create(CourseCreateDTO body) throws SQLException {
-		this.repository.create(body);
+	public int create(CourseCreateDTO body) throws Exception {
+		try {
+			return this.repository.create(body);
+		} catch (Exception err) {
+			err.printStackTrace();
+			throw new Exception("Não foi possível criar o curso");
+		}
 	}
 
 	public void update(int courseCode, CourseUpdateDTO body) throws Exception {
-		try {
-			this.repository.update(courseCode, body);
-		} catch (SQLException sqlError) {
-			throw new Exception("Error on updating");
-		}
+		this.repository.update(courseCode, body);
 	}
 
 	public void delete(int courseCode) throws Exception {
-		try {
-			this.repository.delete(courseCode);
-		} catch (SQLException sqlError) {
-			throw new Exception("Error on deleting");
-		}
+		this.repository.delete(courseCode);
 	}
 }

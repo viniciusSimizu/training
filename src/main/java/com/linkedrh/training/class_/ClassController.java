@@ -1,4 +1,4 @@
-package com.linkedrh.training.course;
+package com.linkedrh.training.class_;
 
 import java.util.HashMap;
 import java.util.List;
@@ -16,49 +16,37 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.linkedrh.training.course.dtos.CourseCreateDTO;
-import com.linkedrh.training.course.dtos.CourseUpdateDTO;
+import com.linkedrh.training.class_.dtos.ClassCreateDTO;
+import com.linkedrh.training.class_.dtos.ClassUpdateDTO;
 
 @RestController
-@RequestMapping("/course")
-public class CourseController {
+@RequestMapping("/class")
+public class ClassController {
 
 	@Autowired
-	CourseService service;
-
-	@GetMapping
-	public ResponseEntity<Object> list() {
-		try {
-			List<Course> courses = this.service.list();
-			return ResponseEntity.ok(courses);
-		} catch (Exception err) {
-			return ResponseEntity
-				.internalServerError()
-				.body(err.getMessage());
-		}
-	}
+	private ClassService service;
 
 	@PostMapping
-	public ResponseEntity<Object> create(@RequestBody CourseCreateDTO body) {
+	public ResponseEntity<Object> create(@RequestBody ClassCreateDTO body) {
 		try {
-			int courseCode = this.service.create(body);
+			int classCode = this.service.create(body);
 
 			Map<String, Object> response = new HashMap<>();
-			response.put("courseCode", courseCode);
+			response.put("classCode", classCode);
 
 			return ResponseEntity.status(HttpStatus.CREATED).body(response);
 		} catch (Exception err) {
-			return ResponseEntity.internalServerError().build();
+			return ResponseEntity.internalServerError().body(err.getMessage());
 		}
 	}
 
 	@PutMapping("/{code}")
-	public ResponseEntity<Object> update(@PathVariable int code, @RequestBody CourseUpdateDTO body) {
+	public ResponseEntity<Object> update(@PathVariable int code, @RequestBody ClassUpdateDTO body) {
 		try {
 			this.service.update(code, body);
 			return ResponseEntity.status(HttpStatus.OK).build();
-		} catch(Exception err) {
-			return ResponseEntity.internalServerError().build();
+		} catch (Exception err) {
+			return ResponseEntity.internalServerError().body(err.getMessage());
 		}
 	}
 
@@ -68,7 +56,17 @@ public class CourseController {
 			this.service.delete(code);
 			return ResponseEntity.status(HttpStatus.OK).build();
 		} catch (Exception err) {
-			return ResponseEntity.internalServerError().build();
+			return ResponseEntity.internalServerError().body(err.getMessage());
+		}
+	}
+
+	@GetMapping("/{courseCode}")
+	public ResponseEntity<Object> listByCourse(@PathVariable int courseCode) {
+		try {
+			List<Class> classes = this.service.listByCourse(courseCode);
+			return ResponseEntity.status(HttpStatus.OK).body(classes);
+		} catch (Exception err) {
+			return ResponseEntity.internalServerError().body(err.getMessage());
 		}
 	}
 }

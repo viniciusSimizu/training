@@ -11,6 +11,20 @@ public class Course {
 		this.description = description;
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) return false;
+		if (this.getClass() != obj.getClass()) return false;
+		Course that = (Course) obj;
+
+		if (this.code() != that.code()) return false;
+		if (this.duration() != that.duration()) return false;
+		if (!this.name().equals(that.name())) return false;
+		if (!this.description().equals(that.description())) return false;
+
+		return true;
+	}
+
 	public int code() {
 		return this.code;
 	}

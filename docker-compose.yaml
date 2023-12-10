@@ -2,13 +2,18 @@
 version: '1'
 
 services:
+
+  app:
+    build: .
+    ports:
+      - 8080:8080
   
   db:
-    build: .
+    build: ./src/main/resources/migrations
     restart: always
     environment:
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=admin123
       - POSTGRES_DB=linkedrh_training
     ports:
-      - 3000:5432
+      - 5432:5432

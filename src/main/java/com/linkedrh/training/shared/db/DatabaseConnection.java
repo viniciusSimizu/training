@@ -13,7 +13,7 @@ public class DatabaseConnection {
 	Properties props = new Properties();
 
 	public DatabaseConnection() {
-		this.url =  "jdbc:postgresql://localhost:3000/linkedrh_training";
+		this.url =  "jdbc:postgresql://localhost:5432/linkedrh_training";
 		this.props.setProperty("user", "root");
 		this.props.setProperty("password", "admin123");
 	}

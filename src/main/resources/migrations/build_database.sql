@@ -1,3 +1,4 @@
+-- =================== Structure =====================
 CREATE SEQUENCE course_code_seq;
 CREATE TABLE course (
     code INTEGER NOT NULL PRIMARY KEY DEFAULT NEXTVAL('course_code_seq'),
@@ -16,43 +17,72 @@ CREATE TABLE employee (
     birth_Day DATE NOT NULL,
     role VARCHAR(200) NOT NULL,
     admission DATE NOT NULL,
-    status BIT NOT NULL
+    status BOOLEAN NOT NULL
 );
 ALTER SEQUENCE employee_code_seq
 OWNED BY employee.code;
 
-CREATE SEQUENCE classes_code_seq;
-CREATE TABLE classes (
-    code INTEGER NOT NULL PRIMARY KEY DEFAULT NEXTVAL('classes_code_seq'),
+CREATE SEQUENCE class_code_seq;
+CREATE TABLE class (
+    code INTEGER NOT NULL PRIMARY KEY DEFAULT NEXTVAL('class_code_seq'),
     start_date DATE NOT NULL,
     end_date DATE NOT NULL,
-    train_location VARCHAR(200),
+    location VARCHAR(200),
     course_code INTEGER NOT NULL
 );
-ALTER SEQUENCE classes_code_seq
-OWNED BY classes.code;
+ALTER SEQUENCE class_code_seq
+OWNED BY class.code;
 
 CREATE SEQUENCE classes_participants_code_seq;
 CREATE TABLE classes_participants (
     code INTEGER NOT NULL PRIMARY KEY DEFAULT NEXTVAL('classes_participants_code_seq'),
-    classes_code INTEGER NOT NULL,
+    class_code INTEGER NOT NULL,
     employee_code INTEGER NOT NULL
 );
 ALTER SEQUENCE classes_participants_code_seq
 OWNED BY classes_participants.code;
 
-ALTER TABLE classes
+ALTER TABLE class
 ADD CONSTRAINT fk_classes_course
 FOREIGN KEY (course_code)
 REFERENCES course (code)
 ON DELETE CASCADE;
 
 ALTER TABLE classes_participants
-ADD CONSTRAINT fk_classes_participants_classes
-FOREIGN KEY (classes_code)
-REFERENCES classes (code);
+ADD CONSTRAINT fk_classes_participants_class
+FOREIGN KEY (class_code)
+REFERENCES class (code);
 
 ALTER TABLE classes_participants
 ADD CONSTRAINT fk_classes_participants_employee
 FOREIGN KEY (employee_code)
 REFERENCES employee (code);
+
+-- =================== Populate =====================
+INSERT INTO employee
+(name, cpf, birth_day, role, admission, status)
+VALUES
+(
+    'Estevan Tiaraju',
+    '12345678912',
+    '2002/05/04',
+    'Fotógrafo',
+    '2020/08/01',
+    TRUE
+),
+(
+    'Otávio Araujo',
+    '98765432198',
+    '1998/02/20',
+    'Gerente de logística',
+    '2019/12/10',
+    TRUE
+),
+(
+    'Biel Fiuza',
+    '12309845676',
+    '2003/12/30',
+    'Quality Assurance',
+    '2021/01/01',
+    FALSE
+);

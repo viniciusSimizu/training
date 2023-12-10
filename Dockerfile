@@ -1,5 +1,5 @@
-FROM postgres:16.1-alpine3.18
+FROM eclipse-temurin:17
 
-COPY /src/main/resources/migrations/* /docker-entrypoint-initdb.d/
-
-EXPOSE 3000
+WORKDIR /app
+COPY target/training-0.0.1-SNAPSHOT.jar .
+ENTRYPOINT ["java", "-jar", "/app/training-0.0.1-SNAPSHOT.jar"]
