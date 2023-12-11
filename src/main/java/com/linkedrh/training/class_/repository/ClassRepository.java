@@ -1,4 +1,4 @@
-package com.linkedrh.training.class_;
+package com.linkedrh.training.class_.repository;
 
 import java.sql.Connection;
 import java.sql.Date;
@@ -12,18 +12,20 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.linkedrh.training.class_.Class;
 import com.linkedrh.training.class_.dtos.ClassCreateDTO;
 import com.linkedrh.training.class_.dtos.ClassUpdateDTO;
 import com.linkedrh.training.shared.db.DatabaseConnection;
 
 @Repository
-public class ClassRepository {
+public class ClassRepository implements IClassRepository {
 
 	private String table = "class";
 
 	@Autowired
 	private DatabaseConnection dbConnection;
 
+	@Override
 	public int create(ClassCreateDTO class_) throws SQLException {
 		String query = """
 			INSERT INTO %s
@@ -39,8 +41,8 @@ public class ClassRepository {
 				PreparedStatement pstmt = conn.prepareStatement(String.format(query, this.table));
 			)
 		{
-			pstmt.setDate(1, Date.valueOf(class_.start));
-			pstmt.setDate(2, Date.valueOf(class_.end));
+			pstmt.setDate(1, Date.valueOf(class_.startDate));
+			pstmt.setDate(2, Date.valueOf(class_.endDate));
 			pstmt.setString(3, class_.location);
 			pstmt.setInt(4, class_.courseCode);
 
@@ -55,6 +57,7 @@ public class ClassRepository {
 		return classCode;
 	}
 
+	@Override
 	public void update(int code, ClassUpdateDTO class_) throws SQLException {
 		String query = """
 			UPDATE %s
@@ -78,6 +81,7 @@ public class ClassRepository {
 		}
 	}
 
+	@Override
 	public void delete(int code) throws SQLException {
 		String query = """
 			DELETE FROM %s
@@ -94,12 +98,16 @@ public class ClassRepository {
 		}
 	}
 
+	@Override
 	public List<Class> listByCourseCode(int courseCode) throws SQLException {
 		String query = """
 			SELECT
 				code, start_date, end_date, location
 			FROM %s
 			WHERE course_code = ?
+			ORDER BY
+				start_date ASC,
+				end_date ASC
 			""";
 		List<Class> classes = new ArrayList<>();
 
@@ -128,6 +136,7 @@ public class ClassRepository {
 		return classes;
 	}
 	
+	@Override
 	public Class findByCode(int classCode) throws SQLException {
 		String query = """
 			SELECT

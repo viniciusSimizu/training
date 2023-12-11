@@ -1,24 +1,25 @@
 package com.linkedrh.training.shared.db;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
+import org.springframework.stereotype.Component;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.Properties;
-
-import org.springframework.stereotype.Component;
 
 @Component
 public class DatabaseConnection {
-	String url;
-	Properties props = new Properties();
 
-	public DatabaseConnection() {
-		this.url =  "jdbc:postgresql://localhost:5432/linkedrh_training";
-		this.props.setProperty("user", "root");
-		this.props.setProperty("password", "admin123");
-	}
+    @Autowired
+    private Environment environment;
 
-	public Connection getConnection() throws SQLException {
-		return DriverManager.getConnection(url, props);
-	}
+    public Connection getConnection() throws SQLException {
+        String url = environment.getProperty("spring.datasource.url");
+        String user = environment.getProperty("spring.datasource.user");
+        String passwd = environment.getProperty("spring.datasource.passwd");
+
+        return DriverManager.getConnection(url, user, passwd);
+    }
 }
+

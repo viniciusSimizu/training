@@ -15,16 +15,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import com.linkedrh.training.class_.Class;
-import com.linkedrh.training.class_.ClassRepository;
+import com.linkedrh.training.class_.repository.IClassRepository;
 import com.linkedrh.training.class_.dtos.ClassCreateDTO;
 import com.linkedrh.training.class_participant.ClassParticipant;
-import com.linkedrh.training.class_participant.ClassParticipantRepository;
+import com.linkedrh.training.class_participant.repository.IClassParticipantRepository;
 import com.linkedrh.training.class_participant.dtos.ClassParticipantCreateDTO;
 import com.linkedrh.training.course.Course;
-import com.linkedrh.training.course.CourseRepository;
+import com.linkedrh.training.course.repository.ICourseRepository;
 import com.linkedrh.training.course.dtos.CourseCreateDTO;
 import com.linkedrh.training.employee.Employee;
-import com.linkedrh.training.employee.EmployeeRepository;
+import com.linkedrh.training.employee.repository.IEmployeeRepository;
 
 @SpringBootTest
 @TestInstance(Lifecycle.PER_CLASS)
@@ -34,16 +34,16 @@ public class ClassParticipantRepositoryTest {
 	private List<Employee> employeesDb = new ArrayList<>();
 
 	@Autowired
-	private ClassParticipantRepository repository;
+	private IClassParticipantRepository repository;
 
 	@Autowired
-	private CourseRepository courseRepository;
+	private ICourseRepository courseRepository;
 
 	@Autowired
-	private EmployeeRepository employeeRepository;
+	private IEmployeeRepository employeeRepository;
 
 	@Autowired
-	private ClassRepository classRepository;
+	private IClassRepository classRepository;
 
 	@BeforeAll
 	public void setupDefaultData() throws SQLException {

@@ -1,4 +1,4 @@
-package com.linkedrh.training.employee;
+package com.linkedrh.training.employee.repository;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,21 +12,24 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.linkedrh.training.employee.Employee;
 import com.linkedrh.training.shared.db.DatabaseConnection;
 
 @Repository
-public class EmployeeRepository {
+public class EmployeeRepository implements IEmployeeRepository {
 
 	private String table = "employee";
 
 	@Autowired
 	private DatabaseConnection dbConnection;
 
+	@Override
 	public List<Employee> list() throws SQLException {
 		String query = """
 			SELECT
 				code, name, cpf, birth_day, role, admission, status
 			FROM %s
+			ORDER BY NOW() - admission DESC
 			""";
 		List<Employee> employees = new ArrayList<>();
 
@@ -53,6 +56,7 @@ public class EmployeeRepository {
 		return employees;
 	}
 
+	@Override
 	public Employee findById(int employeeCode) throws SQLException {
 		String query = """
 			SELECT

@@ -15,11 +15,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import com.linkedrh.training.class_.Class;
-import com.linkedrh.training.class_.ClassRepository;
+import com.linkedrh.training.class_.repository.IClassRepository;
 import com.linkedrh.training.class_.dtos.ClassCreateDTO;
 import com.linkedrh.training.class_.dtos.ClassUpdateDTO;
 import com.linkedrh.training.course.Course;
-import com.linkedrh.training.course.CourseRepository;
+import com.linkedrh.training.course.repository.ICourseRepository;
 import com.linkedrh.training.course.dtos.CourseCreateDTO;
 
 @SpringBootTest
@@ -29,10 +29,10 @@ public class ClassRepositoryTest {
 	private Course courseTest;
 
 	@Autowired
-	private ClassRepository repository;
+	private IClassRepository repository;
 
 	@Autowired
-	private CourseRepository courseRepository;
+	private ICourseRepository courseRepository;
 
 	@BeforeAll
 	public void setupDefaultData() throws SQLException {

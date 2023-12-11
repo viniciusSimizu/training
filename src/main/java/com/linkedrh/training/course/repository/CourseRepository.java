@@ -1,4 +1,4 @@
-package com.linkedrh.training.course;
+package com.linkedrh.training.course.repository;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -11,23 +11,26 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.linkedrh.training.course.Course;
 import com.linkedrh.training.course.dtos.CourseCreateDTO;
 import com.linkedrh.training.course.dtos.CourseUpdateDTO;
 import com.linkedrh.training.shared.db.DatabaseConnection;
 
 @Repository
-public class CourseRepository {
+public class CourseRepository implements ICourseRepository {
 
 	private String table = "course";
 
 	@Autowired
 	private DatabaseConnection dbConnection;
 
+	@Override
 	public List<Course> list() throws SQLException {
 		String query = """
 			SELECT
-			code, duration, name, description
+				code, duration, name, description
 			FROM %s
+			ORDER BY code ASC
 			""";
 		List<Course> courses = new ArrayList<>();
 
@@ -51,6 +54,7 @@ public class CourseRepository {
 		return courses;
 	}
 
+	@Override
 	public int create(CourseCreateDTO course) throws SQLException {
 		String query = """
 			INSERT INTO %s
@@ -81,6 +85,7 @@ public class CourseRepository {
 		return courseCode;
 	}
 
+	@Override
 	public void update(int code, CourseUpdateDTO course) throws SQLException {
 		String query = """
 			UPDATE %s
@@ -101,6 +106,7 @@ public class CourseRepository {
 		}
 	}
 
+	@Override
 	public void delete(int code) throws SQLException {
 		String query = """
 			DELETE FROM %s
@@ -117,6 +123,7 @@ public class CourseRepository {
 		}	
 	}
 
+	@Override
 	public Course findByCode(int courseCode) throws SQLException {
 		String query = """
 			SELECT

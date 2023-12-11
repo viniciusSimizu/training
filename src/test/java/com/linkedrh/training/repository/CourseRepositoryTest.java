@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import com.linkedrh.training.course.Course;
-import com.linkedrh.training.course.CourseRepository;
+import com.linkedrh.training.course.repository.ICourseRepository;
 import com.linkedrh.training.course.dtos.CourseCreateDTO;
 import com.linkedrh.training.course.dtos.CourseUpdateDTO;
 
@@ -18,7 +18,7 @@ import com.linkedrh.training.course.dtos.CourseUpdateDTO;
 public class CourseRepositoryTest {
 
 	@Autowired
-	private CourseRepository repository;
+	private ICourseRepository repository;
 
 	@Test
 	public void createCourse() throws SQLException {

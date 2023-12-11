@@ -43,7 +43,7 @@ ALTER SEQUENCE classes_participants_code_seq
 OWNED BY classes_participants.code;
 
 ALTER TABLE class
-ADD CONSTRAINT fk_classes_course
+ADD CONSTRAINT fk_class_course
 FOREIGN KEY (course_code)
 REFERENCES course (code)
 ON DELETE CASCADE;
@@ -51,7 +51,8 @@ ON DELETE CASCADE;
 ALTER TABLE classes_participants
 ADD CONSTRAINT fk_classes_participants_class
 FOREIGN KEY (class_code)
-REFERENCES class (code);
+REFERENCES class (code)
+ON DELETE CASCADE;
 
 ALTER TABLE classes_participants
 ADD CONSTRAINT fk_classes_participants_employee

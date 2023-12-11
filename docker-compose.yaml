@@ -9,11 +9,11 @@ services:
       - 8080:8080
   
   db:
-    build: ./src/main/resources/migrations
+    build: src/main/resources/migrations
     restart: always
     environment:
-      - POSTGRES_USER=root
-      - POSTGRES_PASSWORD=admin123
-      - POSTGRES_DB=linkedrh_training
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWD}
+      - POSTGRES_DB=${DB_NAME}
     ports:
       - 5432:5432

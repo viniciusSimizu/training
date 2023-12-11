@@ -1,4 +1,4 @@
-package com.linkedrh.training.class_participant;
+package com.linkedrh.training.class_participant.repository;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -10,22 +10,19 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.linkedrh.training.class_participant.ClassParticipant;
 import com.linkedrh.training.class_participant.dtos.ClassParticipantCreateDTO;
-import com.linkedrh.training.employee.Employee;
-import com.linkedrh.training.employee.EmployeeRepository;
 import com.linkedrh.training.shared.db.DatabaseConnection;
 
 @Repository
-public class ClassParticipantRepository {
+public class ClassParticipantRepository implements IClassParticipantRepository {
 
 	private String table = "classes_participants";
 
 	@Autowired
 	private DatabaseConnection dbConnection;
 
-	@Autowired
-	private EmployeeRepository employeeRepository;
-
+	@Override
 	public int create(ClassParticipantCreateDTO classParticipant) throws SQLException {
 		String query = """
 			INSERT INTO %s
@@ -55,6 +52,7 @@ public class ClassParticipantRepository {
 		return classParticipantCode;
 	}
 
+	@Override
 	public void delete(int code) throws SQLException {
 		String query = """
 			DELETE FROM %s
@@ -71,12 +69,14 @@ public class ClassParticipantRepository {
 		}
 	}
 
+	@Override
 	public List<ClassParticipant> listByClass(int classCode) throws SQLException {
 		String query = """
 			SELECT
 				code, employee_code
 			FROM %s
 			WHERE class_code = ?
+			ORDER BY code ASC
 			""";
 		List<ClassParticipant> classParticipant = new ArrayList<>();
 
@@ -100,6 +100,7 @@ public class ClassParticipantRepository {
 		return classParticipant;
 	}
 
+	@Override
 	public ClassParticipant findByCode(int classParticipantCode) throws SQLException {
 		String query = """
 			SELECT
