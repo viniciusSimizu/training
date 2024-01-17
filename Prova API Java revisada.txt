@@ -1,0 +1,132 @@
+Prova de API REST usando Java / Spring
+
+Contexto: 
+    Controlar treinamentos dos funcionários.
+Requisitos e regras de negócio: 
+    Cadastro (inclusão, alteração, exclusão e listagem) de cursos. Um curso tem nome, descrição (resumo do conteúdo do curso) e duração (valor inteiro que representa a quantidade de minutos do curso. Exemplo: 90 indica que o curso dura 1 hora e meia).
+    Cadastro de funcionários (nesse caso inclusão, alteração e busca por funcionários de acordo com o seu status). Um funcionário tem nome, CPF, data de nascimento, nome do cargo, data de admissão na empresa. Um funcionário não pode ser apagado, mas apenas marcado como inativo.
+    Cadastro de turmas de treinamento (inclusão, alteração, exclusão de turmas, busca de turmas por curso, inclusão, exclusão e listagem de participantes). Entende-se por turma a aplicação de um curso por um determinado período (ver campos Inicio e Fim) para um grupo específico de funcionários (ver tabela TurmaParticipante). Um funcionário pode ter participado de vários cursos - isso implica que ele fez parte de várias turmas. Um curso pode ter várias turmas (ser oferecido em várias datas para vários grupos de funcionários). Uma turma tem data de ínicio, data de fim, local do treinamento e uma lista de participantes e está atrelada a um único curso.
+    Para poder apagar um curso, deve ser verificada a existência de suas turmas. Caso exista pelo menos uma turma, o curso será mantido no banco de dados como inativo. Cursos inativos não retornam em consultas, a menos que isso seja solicitado em algum endpoint. Deve ser criado um parâmetro extra no endpoint de apagar curso, chamado "force", para remover não só o curso, mas todas as suas turmas, removendo os seus participantes. Considerar que o banco não tem deleção em cascata aqui e implementar a remoção dos registros em java, de maneira transacional.
+    Não se pode mudar o curso de uma turma depois que já foi criada. Os demais campos podem ser alterados normalmente.
+    Não se pode alterar um participante de uma turma. Mas é possível incluir participantes ou removê-los.
+    A listagem de cursos deve trazer o nome, a duração, uma coluna informando o status (se o curso está ativo ou inativo), a quantidade de turma que existem e a data mais próxima de início da próxima turma. Caso não haja nenhuma turma programada para o futuro, essa coluna vem em branco. Mas se várias turmas estiverm agendadas para o futuro, trazer a de menor data de início.
+    Já a busca de turmas é um endpoint que recebe como parâmetro o código do curso e é feito um filtro de todas as turmas daquela curso, ordenadas pela data de início e data de fim. Cada turma retornada deve informar a quantidade de funcionários da turma. 
+    A busca por funcionários recebe um parâmetro que indica se deve trazer só ativos, só inativos ou ambos. O retorno deve ser ordenado por nome da pessoa. O parâmetro de filtro é opcional e, se omito, traz todos. Mas, se fornecido, deve indicar 0 para inativos ou 1 para ativos.
+    Criar uma busca que, dados um código de curso e um código de funcionário, retorne a turma do curso que contenha essa pessoa como participante com a maior data início (caso ele tenha participado de várias turmas do mesmo curso) ou informe o código HTTP 404, caso não exista. Trazer o código da turma, datas de início e fim e o local.
+    Implementar um endpoint que, dado um código de funcionário, o exclua de todas as turmas futuras. A ideia é utilizar o serviço quando um funcionário for desligado da empresa.
+    Criar um endpoint que traga um detalhamento de todas as turmas cujas respectivas datas de início estejam dentro de um período estipulado no filtro, recebido por parâmetro. Esse filtro deve passar uma data inicial e uma final e a data de início da turma deve estar nesse intervalo (usar between na busca ou algo similar). Ordenar alfabeticamente pelo nome do curso. A consulta deve trazer um resultado conforme o Json de exemplo abaixo:
+    [
+        {
+            "codigo" : 13, 
+            "nome" : "Desenvolvendo APIs em Java com Spring Boot",
+            "duracao" : 2400,
+            "quantidadeTurmas" : 2,
+            "turmas" : [
+                           {
+                               "turma" : 18,
+                               "inicio" : "2025-01-06",
+                               "fim" : "2025-02-06",
+                               "local" : "sala 2 - sede",
+                               "quantidadeParticipantes" : 3,
+                               "participantes" : [
+                                                     {"codigo" : 1122, "nome" : "Alex Vidal Filho"},
+                                                     {"codigo" : 1156, "nome" : "Geison Lee"},
+                                                     {"codigo" : 2112, "nome" : "Nilo Peart"}
+                                                 ]
+                           },
+                           {
+                               "turma" : 22,
+                               "inicio" : "2025-05-02",
+                               "fim" : "2025-06-02",
+                               "local" : "sala 3 - sede",
+                               "quantidadeParticipantes" : 0,
+                               "participantes" : []
+                           }
+                       ]
+        },
+        {
+            "codigo" : 66, 
+            "nome" : "Desenvolvimento profissional com PHP",
+            "duracao" : 240,
+            "quantidadeTurmas" : 0,
+            "turmas" : []
+        },
+        {
+            "codigo" : 24, 
+            "nome" : "Francês instrumental",
+            "duracao" : 4800,
+            "quantidadeTurmas" : 2,
+            "turmas" : [
+                           {
+                               "turma" : 96,
+                               "inicio" : "2025-02-09",
+                               "fim" : "2025-04-09",
+                               "local" : "sala 2 - sede",
+                               "quantidadeParticipantes" : 4,
+                               "participantes" : [
+                                                     {"codigo" : 1156, "nome" : "Geison Lee"},
+                                                     {"codigo" : 2112, "nome" : "Nilo Peart"},
+                                                     {"codigo" : 9889, "nome" : "Frederico Moura"},
+                                                     {"codigo" : 9890, "nome" : "João de Coimbra"}
+                                                 ]
+                           },
+                           {
+                               "turma" : 99,
+                               "inicio" : "2025-05-19",
+                               "fim" : "2025-07-20",
+                               "local" : "sala 1 - grêmio",
+                               "quantidadeParticipantes" : 5,
+                               "participantes" : [
+                                                     {"codigo" : 1122, "nome" : "Alex Vidal Filho"},
+                                                     {"codigo" : 2344, "nome" : "João Massa"},
+                                                     {"codigo" : 2345, "nome" : "Davi Mustaine"},
+                                                     {"codigo" : 2346, "nome" : "Roberto Trujillo"},
+                                                     {"codigo" : 2347, "nome" : "Roger Tomé"}
+                           }
+                       ]
+        }
+    ]
+    Mesmo quando uma turma não tenha participantes, a mesma deve aparecer no retorno da busca. O mesmo vale para um curso que não tenha turmas.
+        
+    Todas as tabelas do banco de dados contam com um código sequencial numérico inteiro próprio que é a sua respectiva chave primária. Esse código é gerado automaticamente pelo banco de dados no insert da tabela.
+    Segue a estrutura das tabelas:
+        Curso
+            Codigo      int (PK e autoincremento) not null
+            Nome        varchar(100)  not null
+            Descricao   varchar(4000) not null
+            Duracao     int not null
+        
+        Funcionario
+            Codigo      int (PK e autoincremento) not null
+            Nome        varchar(200)  not null
+            CPF         char(11)      not null
+            Nascimento  date          not null
+            Cargo       varchar(200)  not null
+            Admissao    date          not null
+            Status      bit           not null (bit é um campo que só aceita 0 ou 1. 0 indica inativo e 1 indica ativo)
+        
+        Turma
+            Codigo      int (PK e autoincremento) not null
+            Inicio      date not null
+            Fim         date not null
+            Local       varchar(200)
+            Curso       int (chave estrangeira para a tabela Curso, coluna Codigo)
+        
+        TurmaParticipante
+            Codigo      int (PK e autoincremento) not null
+            Turma       int (chave estrangeira para a tabela Turma, coluna Codigo)
+            Funcionario int (chave estrangeira para a tabela Funcionario, coluna Codigo)
+            
+O exercício consiste em criar os endpoints para atender a todas as operações citadas nos requisitos, provendo webservices no padrão REST, usando Java e Spring Boot. 
+Seguir as boas práticas para uma API RESTFul (https://aws.amazon.com/pt/what-is/restful-api/).
+Dar preferência ao uso de path parameters (https://www.baeldung.com/spring-requestparam-vs-pathvariable). 
+NÃO deve ser utilizado nenhum mecanismo de ORM / geração automática de consultas, como JPA ou Hibernate. Todas as consultas devem ser escritas manualmente em SQL. Utilizar JDBC. Pode ser utilizada alguma biblioteca externa que ajude na gestão do JDBC, como Apache DB Utils (https://commons.apache.org/proper/commons-dbutils/) ou similar, desde que a escrita dos SQLs seja feita pelo programador. Todas as operações que envolvam alteração de dados no banco devem ser transacionais.
+Todos os endpoints devem gerar log usando log4j e registrar como INFO quando o endpoint foi chamado. O log deve informar "O serviço <serviço> foi chamado". Exemplo: O serviço de inclusão de participante em uma turma foi chamado". Também deve ter um log de nível DEBUG que exiba o SQL gerado pelo sistema.
+Fica a critério do programador o uso de connection pool (Hikari, por exemplo - https://github.com/brettwooldridge/HikariCP).
+Utilizar java 11 ou superior. 
+O banco de dados pode ser qualquer um, desde que seja relacional. Exemplos (SQL Server, Oracle, MySQL, PostgreSQL, entre outros).
+A aplicação deve ter separação de responsabilidades: classes separadas para receber a requisição REST (controller), para processar as regras de negócio, para acesso a banco de dados e objetos de transporte entre essas camadas.
+Todos os endpoints devem validar se foi recebido no cabeçalho http chamado Authorization a string "Bearer token_exercicio_rest". Caso não seja encontrado esse cabeçalho na requisição ou o valor do token esteja diferente, o serviço deve retornar http 403.
+Criar testes automáticos em JUnit com o que julgar necessário validar em termos de regras de negócio.
+Gerar a documentação da API com o swagger
+
