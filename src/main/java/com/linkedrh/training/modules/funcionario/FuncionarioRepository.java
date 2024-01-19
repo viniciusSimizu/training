@@ -47,8 +47,8 @@ public class FuncionarioRepository {
 
             return codigo;
         } catch (SQLException err) {
-            this.log.error(err.getSQLState());
-            throw new Exception("Não foi possível criar um Curso");
+            this.log.error(err.getMessage());
+            throw new Exception("Não foi possível criar o Funcionário");
         }
     }
 }

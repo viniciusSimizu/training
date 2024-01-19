@@ -11,14 +11,14 @@
 
 - Funcionário:
 
-  [ ] POST
+  [X] POST
   [ ] PUT
   [ ] LIST by status
   [ ] DELETE from Turmas
 
 - Turma:
 
-  [ ] POST
+  [X] POST
   [ ] PUT
   [ ] DELETE
   [ ] LIST by Curso
