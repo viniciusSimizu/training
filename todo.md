@@ -4,31 +4,31 @@
 
 - Curso:
 
-  - LIST
-  - POST
-  - PUT
-  - DELETE
+  [ ] LIST
+  [X] POST
+  [ ] PUT
+  [ ] DELETE
 
 - Funcionário:
 
-  - POST
-  - PUT
-  - LIST by status
-  - DELETE from Turmas
+  [ ] POST
+  [ ] PUT
+  [ ] LIST by status
+  [ ] DELETE from Turmas
 
 - Turma:
 
-  - POST
-  - PUT
-  - DELETE
-  - LIST by Curso
-  - LIST by range of Inicio and Fim
-  - FIND by Curso and Funcionario
+  [ ] POST
+  [ ] PUT
+  [ ] DELETE
+  [ ] LIST by Curso
+  [ ] LIST by range of Inicio and Fim
+  [ ] FIND by Curso and Funcionario
 
   - Participante:
-    - POST
-    - DELETE
-    - LIST by turma
+    [ ] POST
+    [ ] DELETE
+    [ ] LIST by turma
 
 ## Data
 

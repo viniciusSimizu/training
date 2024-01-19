@@ -6,8 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CreateCursoBodyDTO implements Validated {
-    public String nome;
-    public String descricao = "";
+    public String nome, descricao = "";
     public Integer duracao;
 
     private boolean valid = true;
@@ -27,11 +26,11 @@ public class CreateCursoBodyDTO implements Validated {
 
     private boolean isValidNome() {
         if (this.nome == null) {
-            this.errors.add("'nome' deve ser preenchido");
+            this.errors.add("nome deve ser preenchido");
             return false;
         }
         if (this.nome.length() == 0) {
-            this.errors.add("'nome' não pode estar vazio");
+            this.errors.add("nome não pode estar vazio");
             return false;
         }
         return true;
@@ -39,11 +38,11 @@ public class CreateCursoBodyDTO implements Validated {
 
     private boolean isValidDuracao() {
         if (this.duracao == null) {
-            this.errors.add("'duracao' deve ser preenchido");
+            this.errors.add("duracao deve ser preenchido");
             return false;
         }
         if (this.duracao <= 0) {
-            this.errors.add("'duracao' deve ser positivo");
+            this.errors.add("duracao deve ser positivo");
             return false;
         }
         return true;

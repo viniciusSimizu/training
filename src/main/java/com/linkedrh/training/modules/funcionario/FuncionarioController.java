@@ -1,7 +1,7 @@
-package com.linkedrh.training.modules.curso;
+package com.linkedrh.training.modules.funcionario;
 
 import com.linkedrh.training.lib.log.LogMessageHandler;
-import com.linkedrh.training.modules.curso.dtos.CreateCursoBodyDTO;
+import com.linkedrh.training.modules.funcionario.dtos.CreateFuncionarioBodyDTO;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,19 +18,19 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("curso")
-public class CursoController {
+@RequestMapping("funcionario")
+public class FuncionarioController {
 
-    final Logger log = LoggerFactory.getLogger(CursoController.class);
+    final Logger log = LoggerFactory.getLogger(FuncionarioController.class);
 
-    @Autowired private CursoService service;
+    @Autowired private FuncionarioService service;
 
     @PostMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> create(@RequestBody CreateCursoBodyDTO body) {
+    public ResponseEntity<Object> create(@RequestBody CreateFuncionarioBodyDTO body) {
 
-        final String service = "criação de curso";
+        final String service = "criação de funcionário";
         LogMessageHandler.infoEndpointRegistry(service, this.log);
 
         final Map<String, Object> response = new HashMap<>();
