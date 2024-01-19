@@ -2,8 +2,8 @@ version: '1.0'
 
 services:
   db:
-    image: postgres:16.1
+    build: src/main/resources/db
     container_name: database
     ports:
-      - "5432:5432"
+      - 5432:5432
     env_file: .env
