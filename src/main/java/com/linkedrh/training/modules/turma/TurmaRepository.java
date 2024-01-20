@@ -55,13 +55,14 @@ public class TurmaRepository {
         }
     }
 
-    public void listByCursoId(int cursoId) {
+    public List<Turma> listByCurso(int cursoId) {
         final String query =
                 """
 				SELECT
 					codigo, inicio, fim, local
 				FROM turma
 				WHERE curso_id = ?
+				ORDER BY inicio, fim
 				""";
 
         List<Turma> turmas = new ArrayList<>();
@@ -77,10 +78,15 @@ public class TurmaRepository {
                 turma.setInicio(result.getDate("inicio").toLocalDate());
                 turma.setFim(result.getDate("fim").toLocalDate());
                 turma.setLocal(result.getString("local"));
+
+                turmas.add(turma);
             }
+            result.close();
 
         } catch (SQLException err) {
             this.log.error(err.getMessage());
         }
+
+        return turmas;
     }
 }
