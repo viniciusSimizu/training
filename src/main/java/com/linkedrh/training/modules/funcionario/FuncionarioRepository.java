@@ -39,8 +39,9 @@ public class FuncionarioRepository {
             pstmt.setDate(5, Date.valueOf(body.admissao));
 
             ResultSet result = pstmt.executeQuery();
-            this.log.debug(result.getStatement().toString());
             result.next();
+
+            this.log.debug(result.getStatement().toString());
 
             int codigo = result.getInt("codigo");
             result.close();

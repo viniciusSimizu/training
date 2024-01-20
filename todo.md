@@ -26,7 +26,7 @@
   [ ] FIND by Curso and Funcionario
 
   - Participante:
-    [ ] POST
+    [X] POST
     [ ] DELETE
     [ ] LIST by turma
 

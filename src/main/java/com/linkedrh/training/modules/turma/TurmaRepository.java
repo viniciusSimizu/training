@@ -38,8 +38,9 @@ public class TurmaRepository {
             pstmt.setInt(4, body.cursoId);
 
             ResultSet result = pstmt.executeQuery();
-            this.log.debug(result.getStatement().toString());
             result.next();
+
+            this.log.debug(result.getStatement().toString());
 
             int codigo = result.getInt("codigo");
             result.close();
