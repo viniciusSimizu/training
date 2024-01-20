@@ -40,7 +40,7 @@ public class FuncionarioController {
         final Map<String, Object> response = new HashMap<>();
 
         if (!body.isValid()) {
-            response.put("requestBodyErrors", body.errors);
+            response.put("requestBodyErrors", body.getErrors());
             return new ResponseEntity<Object>(response, HttpStatus.BAD_REQUEST);
         }
 

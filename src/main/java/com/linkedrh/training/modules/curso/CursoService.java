@@ -2,6 +2,7 @@ package com.linkedrh.training.modules.curso;
 
 import com.linkedrh.training.modules.curso.dtos.CreateCursoBodyDTO;
 import com.linkedrh.training.modules.curso.dtos.ListCursoResponseDTO;
+import com.linkedrh.training.modules.curso.dtos.UpdateCursoBodyDTO;
 import com.linkedrh.training.modules.curso.entity.Curso;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,10 @@ public class CursoService {
         }
 
         return formatedCursos;
+    }
+
+    public void update(int cursoId, UpdateCursoBodyDTO body) throws Exception {
+        this.cursoRepository.update(cursoId, body);
     }
 
     public void delete(int cursoId, boolean force) throws Exception {

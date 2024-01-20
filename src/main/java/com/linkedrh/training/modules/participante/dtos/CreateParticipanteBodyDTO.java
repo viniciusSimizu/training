@@ -1,6 +1,7 @@
 package com.linkedrh.training.modules.participante.dtos;
 
 import com.linkedrh.training.lib.interfaces.Validated;
+import com.linkedrh.training.modules.participante.helpers.ParticipanteHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +11,7 @@ public class CreateParticipanteBodyDTO implements Validated {
     public Integer turmaId;
 
     private boolean valid = true;
-    public List<String> errors = new ArrayList<>();
+    private List<String> errors = new ArrayList<>();
 
     @Override
     public boolean isValid() {
@@ -18,23 +19,14 @@ public class CreateParticipanteBodyDTO implements Validated {
             return this.valid;
         }
 
-        this.valid = this.isValidFuncionarioId() && this.valid;
-        this.valid = this.isValidTurmaId() && this.valid;
+        this.valid = ParticipanteHelper.isValidFuncionarioId(funcionarioId, errors) && this.valid;
+        this.valid = ParticipanteHelper.isValidTurmaId(turmaId, errors) && this.valid;
 
         return this.valid;
     }
 
-    private boolean isValidFuncionarioId() {
-        if (this.funcionarioId == null) {
-            return false;
-        }
-        return true;
-    }
-
-    private boolean isValidTurmaId() {
-        if (this.turmaId == null) {
-            return false;
-        }
-        return true;
+    @Override
+    public List<String> getErrors() {
+        return this.errors;
     }
 }

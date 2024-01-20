@@ -3,6 +3,7 @@ package com.linkedrh.training.modules.curso;
 import com.linkedrh.training.lib.log.LogMessageHandler;
 import com.linkedrh.training.modules.curso.dtos.CreateCursoBodyDTO;
 import com.linkedrh.training.modules.curso.dtos.ListCursoResponseDTO;
+import com.linkedrh.training.modules.curso.dtos.UpdateCursoBodyDTO;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -42,7 +44,7 @@ public class CursoController {
         final Map<String, Object> response = new HashMap<>();
 
         if (!body.isValid()) {
-            response.put("requestBodyErrors", body.errors);
+            response.put("requestBodyErrors", body.getErrors());
             return new ResponseEntity<Object>(response, HttpStatus.BAD_REQUEST);
         }
 
@@ -74,6 +76,33 @@ public class CursoController {
         }
 
         return new ResponseEntity<Object>(response, HttpStatus.OK);
+    }
+
+    @PutMapping(
+            path = "/{cursoId}",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object> update(
+            @PathVariable int cursoId, @RequestBody UpdateCursoBodyDTO body) {
+        final String service = "atualizar curso";
+        LogMessageHandler.infoEndpointRegistry(service, this.log);
+
+        if (!body.isValid()) {
+            Map<String, Object> response = new HashMap<>();
+            response.put("requestBodyErrors", body.getErrors());
+            return new ResponseEntity<Object>(response, HttpStatus.BAD_REQUEST);
+        }
+
+        try {
+            this.service.update(cursoId, body);
+
+        } catch (Exception e) {
+            Map<String, Object> response = new HashMap<>();
+            response.put("exception", e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping(path = "/{cursoId}")

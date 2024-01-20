@@ -2,6 +2,7 @@ package com.linkedrh.training.modules.curso;
 
 import com.linkedrh.training.lib.interfaces.IDatabaseManager;
 import com.linkedrh.training.modules.curso.dtos.CreateCursoBodyDTO;
+import com.linkedrh.training.modules.curso.dtos.UpdateCursoBodyDTO;
 import com.linkedrh.training.modules.curso.entity.Curso;
 
 import org.slf4j.Logger;
@@ -137,6 +138,31 @@ public class CursoRepository {
         } catch (SQLException err) {
             this.log.error(err.getMessage());
             throw new Exception("Não foi possível deletar o Curso");
+        }
+    }
+
+    public void update(int cursoId, UpdateCursoBodyDTO body) throws Exception {
+        final String query =
+                """
+				UPDATE curso
+				SET nome = ?,
+				descricao = ?,
+				duracao = ?
+				WHERE codigo = ?
+				""";
+
+        try (Connection conn = this.sqlManager.getConnection();
+                PreparedStatement pstmt = conn.prepareStatement(query); ) {
+            pstmt.setString(1, body.nome);
+            pstmt.setString(2, body.descricao);
+            pstmt.setInt(3, body.duracao);
+            pstmt.setInt(4, cursoId);
+
+            pstmt.executeUpdate();
+
+        } catch (SQLException e) {
+            this.log.error(e.getMessage());
+            throw new Exception("Não foi possível alterar o Curso");
         }
     }
 

@@ -6,7 +6,7 @@
 
   [X] LIST
   [X] POST
-  [ ] PUT
+  [X] PUT
   [X] DELETE
 
 - Funcionário:
@@ -28,7 +28,7 @@
   - Participante:
     [X] POST
     [X] DELETE
-    [ ] LIST by turma
+    [X] LIST by turma
 
 ## Data
 
