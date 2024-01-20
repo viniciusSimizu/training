@@ -38,6 +38,12 @@ public class CursoService {
             this.cursoRepository.delete(cursoId);
             return;
         }
-        this.cursoRepository.updateAtivoField(cursoId, false);
+
+        if (this.cursoRepository.hasTurmas(cursoId)) {
+            this.cursoRepository.updateAtivoField(cursoId, false);
+            return;
+        }
+
+        this.cursoRepository.delete(cursoId);
     }
 }

@@ -154,4 +154,30 @@ public class CursoRepository {
             throw new Exception("Não foi possível alterar o campo 'ativo' do Curso");
         }
     }
+
+    public boolean hasTurmas(int cursoId) throws Exception {
+        final String query =
+                """
+					SELECT 1
+					FROM curso
+					INNER JOIN turma ON turma.curso_id = curso.codigo
+					WHERE curso.codigo = ?
+					LIMIT 1
+				""";
+
+        try (Connection conn = this.sqlManager.getConnection();
+                PreparedStatement pstmt = conn.prepareStatement(query); ) {
+            pstmt.setInt(1, cursoId);
+            ResultSet result = pstmt.executeQuery();
+
+            boolean ativo = result.next();
+            result.close();
+
+            return ativo;
+
+        } catch (SQLException except) {
+            this.log.error(except.getMessage());
+            throw new Exception("Não foi possível alterar o campo 'ativo' do Curso");
+        }
+    }
 }

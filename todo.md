@@ -4,7 +4,7 @@
 
 - Curso:
 
-  [ ] LIST
+  [X] LIST
   [X] POST
   [ ] PUT
   [X] DELETE
@@ -76,7 +76,7 @@
 
 ## Regras de Negócio
 
-[ ] Todas as operações que alteram o banco de dados, devem sem feitas usando transações
+[ ] Todas as operações que alteram o banco de dados, devem ser feitas usando transações
 [ ] Todos os endpoints devem registrar um log no nivel INFO no formato "O serviço <serviço> foi chamado", usando o log4j
 [ ] Todos os endpoints devem registrar um log no nivel DEBUG com o SQL rodado, usando o log4j
 [ ] Todos os endpoints devem verificar se o cabeçalho "Authorization" tem o valor "Bearer token_exercicio_rest", caso as condições não sejam atendidas, retornar HTTP CODE 403
@@ -85,7 +85,7 @@
 
 - Curso:
 
-  [ ] Quando o Curso é deletado, verificar se tem Turmas atreladas a ele, caso tenha, marcar o campo Inativo para True
+  [X] Quando o Curso é deletado, verificar se tem Turmas atreladas a ele, caso tenha, marcar o campo Inativo para True
   [ ] Quando o Curso é deletado com o parâmetro "force=true", deletar o Curso e suas Turmas (não usar o atributo CASCADE do sql; usar transações do sql)
   [ ] Quando os Cursos forem listados, trazer o nome; duração; Inativo; QuantidadeDeTurmas; DataDaTurmaMaisProxima;
 
