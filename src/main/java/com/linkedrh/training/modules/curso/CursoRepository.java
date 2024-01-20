@@ -51,19 +51,63 @@ public class CursoRepository {
     }
 
     public void delete(int cursoId) throws Exception {
-        final String query = """
+        final String queryCurso = """
 					DELETE FROM curso
 					WHERE codigo = ?
 				""";
+        final String queryTurma = """
+					DELETE FROM turma
+					WHERE curso_id = ?
+					""";
+        final String queryParticipante =
+                """
+								DELETE FROM turma_participante AS participante
+								USING turma
+								WHERE
+									participante.turma_id = turma.codigo
+									AND turma.curso_id = ?
+					""";
 
         try (Connection conn = this.sqlManager.getConnection();
-                PreparedStatement pstmt = conn.prepareStatement(query); ) {
-            pstmt.setInt(1, cursoId);
-            pstmt.executeUpdate();
+                PreparedStatement pstmtCurso = conn.prepareStatement(queryCurso);
+                PreparedStatement pstmtTurma = conn.prepareStatement(queryTurma);
+                PreparedStatement pstmtParticipante = conn.prepareStatement(queryParticipante); ) {
+            conn.setAutoCommit(false);
+
+            pstmtParticipante.setInt(1, cursoId);
+            pstmtParticipante.executeUpdate();
+
+            pstmtTurma.setInt(1, cursoId);
+            pstmtTurma.executeUpdate();
+
+            pstmtCurso.setInt(1, cursoId);
+            pstmtCurso.executeUpdate();
+
+            conn.commit();
 
         } catch (SQLException err) {
             this.log.error(err.getMessage());
             throw new Exception("Não foi possível deletar o Curso");
+        }
+    }
+
+    public void updateAtivoField(int cursoId, boolean ativo) throws Exception {
+        final String query = """
+				UPDATE curso
+				SET ativo = ?
+				WHERE codigo = ?
+				""";
+
+        try (Connection conn = this.sqlManager.getConnection();
+                PreparedStatement pstmt = conn.prepareStatement(query); ) {
+            pstmt.setBoolean(1, ativo);
+            pstmt.setInt(2, cursoId);
+
+            pstmt.executeUpdate();
+
+        } catch (SQLException except) {
+            this.log.error(except.getMessage());
+            throw new Exception("Não foi possível alterar o campo 'ativo' do Curso");
         }
     }
 }

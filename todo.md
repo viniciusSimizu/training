@@ -7,7 +7,7 @@
   [ ] LIST
   [X] POST
   [ ] PUT
-  [ ] DELETE
+  [X] DELETE
 
 - Funcionário:
 
@@ -21,7 +21,7 @@
   [X] POST
   [ ] PUT
   [ ] DELETE
-  [ ] LIST by Curso
+  [X] LIST by Curso
   [ ] LIST by range of Inicio and Fim
   [ ] FIND by Curso and Funcionario
 

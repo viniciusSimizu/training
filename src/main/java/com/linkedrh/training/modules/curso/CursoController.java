@@ -9,9 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
@@ -52,5 +55,25 @@ public class CursoController {
         response.put("codigo", codigo);
 
         return new ResponseEntity<Object>(response, HttpStatus.CREATED);
+    }
+
+    @DeleteMapping(path = "/{cursoId}")
+    public ResponseEntity<Object> delete(
+            @PathVariable int cursoId,
+            @RequestParam(name = "force", required = false, defaultValue = "false") Boolean force) {
+        final String service = "deleção de curso";
+        LogMessageHandler.infoEndpointRegistry(service, this.log);
+
+        try {
+            this.service.delete(cursoId, force);
+
+        } catch (Exception e) {
+            Map<String, Object> response = new HashMap<>();
+            response.put("exception", e.getMessage());
+
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

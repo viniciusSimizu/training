@@ -13,4 +13,12 @@ public class CursoService {
     public int create(CreateCursoBodyDTO body) throws Exception {
         return this.cursoRepository.create(body);
     }
+
+    public void delete(int cursoId, boolean force) throws Exception {
+        if (force) {
+            this.cursoRepository.delete(cursoId);
+            return;
+        }
+        this.cursoRepository.updateAtivoField(cursoId, false);
+    }
 }
