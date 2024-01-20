@@ -3,6 +3,7 @@ package com.linkedrh.training.modules.funcionario;
 import com.linkedrh.training.lib.log.LogMessageHandler;
 import com.linkedrh.training.modules.funcionario.dtos.CreateFuncionarioBodyDTO;
 import com.linkedrh.training.modules.funcionario.dtos.ListFuncionarioByTurmaResponseDTO;
+import com.linkedrh.training.modules.funcionario.dtos.UpdateFuncionarioBodyDTO;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -77,6 +78,34 @@ public class FuncionarioController {
         }
 
         return new ResponseEntity<Object>(funcionarios, HttpStatus.CREATED);
+    }
+
+    @PutMapping(
+            path = "/{funcionarioId}",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object> update(
+            @PathVariable int funcionarioId, @RequestBody UpdateFuncionarioBodyDTO body) {
+
+        final String service = "atualizar funcionario";
+        LogMessageHandler.infoEndpointRegistry(service, this.log);
+
+        if (!body.isValid()) {
+            final Map<String, Object> response = new HashMap<>();
+            response.put("requestBodyErrors", body.getErrors());
+            return new ResponseEntity<Object>(response, HttpStatus.BAD_REQUEST);
+        }
+
+        try {
+            this.service.update(funcionarioId, body);
+
+        } catch (Exception except) {
+            final Map<String, Object> response = new HashMap<>();
+            response.put("exception", except.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return new ResponseEntity<Object>(HttpStatus.OK);
     }
 
     @PutMapping(

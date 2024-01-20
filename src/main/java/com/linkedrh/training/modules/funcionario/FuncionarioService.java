@@ -2,6 +2,7 @@ package com.linkedrh.training.modules.funcionario;
 
 import com.linkedrh.training.modules.funcionario.dtos.CreateFuncionarioBodyDTO;
 import com.linkedrh.training.modules.funcionario.dtos.ListFuncionarioByTurmaResponseDTO;
+import com.linkedrh.training.modules.funcionario.dtos.UpdateFuncionarioBodyDTO;
 import com.linkedrh.training.modules.funcionario.entity.Funcionario;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,10 @@ public class FuncionarioService {
         }
 
         return formatedFuncionarios;
+    }
+
+    public void update(int funcionarioId, UpdateFuncionarioBodyDTO body) throws Exception {
+        this.cursoRepository.update(funcionarioId, body);
     }
 
     public void updateAtivoField(int funcionarioId, boolean ativo) throws Exception {

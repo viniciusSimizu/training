@@ -2,6 +2,7 @@ package com.linkedrh.training.modules.funcionario;
 
 import com.linkedrh.training.lib.interfaces.IDatabaseManager;
 import com.linkedrh.training.modules.funcionario.dtos.CreateFuncionarioBodyDTO;
+import com.linkedrh.training.modules.funcionario.dtos.UpdateFuncionarioBodyDTO;
 import com.linkedrh.training.modules.funcionario.entity.Funcionario;
 
 import org.slf4j.Logger;
@@ -101,6 +102,37 @@ public class FuncionarioRepository {
         }
 
         return funcionarios;
+    }
+
+    public void update(int funcionarioId, UpdateFuncionarioBodyDTO body) throws Exception {
+        final String query =
+                """
+								UPDATE funcionario
+								SET nome = ?,
+								cpf = ?,
+								cargo = ?,
+								nascimento = ?,
+								admissao = ?
+								WHERE codigo = ?
+				""";
+
+        try (Connection conn = this.sqlManager.getConnection();
+                PreparedStatement pstmt = conn.prepareStatement(query); ) {
+            pstmt.setString(1, body.nome);
+            pstmt.setString(2, body.cpf);
+            pstmt.setString(3, body.cargo);
+            pstmt.setDate(4, Date.valueOf(body.nascimento));
+            pstmt.setDate(5, Date.valueOf(body.admissao));
+            pstmt.setInt(6, funcionarioId);
+
+            pstmt.executeUpdate();
+
+            this.log.debug(pstmt.toString());
+
+        } catch (SQLException err) {
+            this.log.error(err.getMessage());
+            throw new Exception("Não foi possível atualizar o Funcionário");
+        }
     }
 
     public void updateAtivoField(int funcionarioId, boolean ativo) throws Exception {
