@@ -41,7 +41,7 @@ public class CursoRepository {
             ResultSet result = pstmt.executeQuery();
             result.next();
 
-            this.log.debug(result.getStatement().toString());
+            this.log.debug(pstmt.toString());
 
             int codigo = result.getInt("codigo");
             result.close();
@@ -72,6 +72,8 @@ public class CursoRepository {
         try (Connection conn = this.sqlManager.getConnection();
                 PreparedStatement pstmt = conn.prepareStatement(query); ) {
             ResultSet result = pstmt.executeQuery();
+
+            this.log.debug(pstmt.toString());
 
             while (result.next()) {
                 Curso item = new Curso();
@@ -120,12 +122,15 @@ public class CursoRepository {
 
             pstmtParticipante.setInt(1, cursoId);
             pstmtParticipante.executeUpdate();
+            this.log.debug(pstmtParticipante.toString());
 
             pstmtTurma.setInt(1, cursoId);
             pstmtTurma.executeUpdate();
+            this.log.debug(pstmtTurma.toString());
 
             pstmtCurso.setInt(1, cursoId);
             pstmtCurso.executeUpdate();
+            this.log.debug(pstmtCurso.toString());
 
             conn.commit();
 

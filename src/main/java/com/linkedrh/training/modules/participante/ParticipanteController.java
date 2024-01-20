@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -52,5 +54,24 @@ public class ParticipanteController {
         response.put("codigo", codigo);
 
         return new ResponseEntity<Object>(response, HttpStatus.CREATED);
+    }
+
+    @DeleteMapping(path = "/turma/{turmaId}/funcionario/{funcionarioId}")
+    public ResponseEntity<Object> delete(
+            @PathVariable int turmaId, @PathVariable int funcionarioId) {
+
+        final String service = "deletar participante";
+        LogMessageHandler.infoEndpointRegistry(service, this.log);
+
+        try {
+            this.service.delete(turmaId, funcionarioId);
+
+        } catch (Exception except) {
+            Map<String, Object> response = new HashMap<>();
+            response.put("exception", except.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return new ResponseEntity<Object>(HttpStatus.OK);
     }
 }

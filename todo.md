@@ -27,7 +27,7 @@
 
   - Participante:
     [X] POST
-    [ ] DELETE
+    [X] DELETE
     [ ] LIST by turma
 
 ## Data
@@ -86,11 +86,11 @@
 - Curso:
 
   [X] Quando o Curso é deletado, verificar se tem Turmas atreladas a ele, caso tenha, marcar o campo Inativo para True
-  [ ] Quando o Curso é deletado com o parâmetro "force=true", deletar o Curso e suas Turmas (não usar o atributo CASCADE do sql; usar transações do sql)
+  [X] Quando o Curso é deletado com o parâmetro "force=true", deletar o Curso e suas Turmas (não usar o atributo CASCADE do sql; usar transações do sql)
   [ ] Quando os Cursos forem listados, trazer o nome; duração; Inativo; QuantidadeDeTurmas; DataDaTurmaMaisProxima;
 
 - Turma:
-  [ ] Quando as Turmas forem listadas, filtrar pelo parâmetro Código do Curso da rota, ordenar por DataDeInicio e DataDeFim em ordem DECRESCENTE
+  [ ] Quando as Turmas forem listadas, filtrar pelo parâmetro Código do Curso da rota, ordenar por DataDeInicio e DataDeFim em ordem CRESCENTE
   [ ] Quando a Turma for buscada com o Código do Curso e Funcionario, tentar retornar a Turma com a maior DataDeInicio, caso encontrado, retornar Código; DataDeInicio; DataDeFim; Local;
   [ ] Quando as Turmas forem listadas pelo intervalo de DataDeInicio e DataDeFim, trazer Turmas que estão dentro desse intervalo e ordena-los pelo Nome do Curso
 

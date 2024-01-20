@@ -37,12 +37,35 @@ public class ParticipanteRepository {
             ResultSet result = pstmt.executeQuery();
             result.next();
 
-            this.log.debug(result.getStatement().toString());
+            this.log.debug(pstmt.toString());
 
             int codigo = result.getInt("codigo");
             result.close();
 
             return codigo;
+        } catch (SQLException err) {
+            this.log.error(err.getMessage());
+            throw new Exception("Não foi possível criar a Turma");
+        }
+    }
+
+    public void delete(int turmaId, int funcionarioId) throws Exception {
+        final String query =
+                """
+								DELETE FROM turma_participante
+								WHERE turma_id = ?
+								AND funcionario_id = ?
+				""";
+
+        try (Connection conn = this.sqlManager.getConnection();
+                PreparedStatement pstmt = conn.prepareStatement(query); ) {
+            pstmt.setInt(1, turmaId);
+            pstmt.setInt(2, funcionarioId);
+
+            pstmt.executeUpdate();
+
+            this.log.debug(pstmt.toString());
+
         } catch (SQLException err) {
             this.log.error(err.getMessage());
             throw new Exception("Não foi possível criar a Turma");

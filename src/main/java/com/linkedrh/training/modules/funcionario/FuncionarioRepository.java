@@ -41,7 +41,7 @@ public class FuncionarioRepository {
             ResultSet result = pstmt.executeQuery();
             result.next();
 
-            this.log.debug(result.getStatement().toString());
+            this.log.debug(pstmt.toString());
 
             int codigo = result.getInt("codigo");
             result.close();

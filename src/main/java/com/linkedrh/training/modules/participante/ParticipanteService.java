@@ -13,4 +13,8 @@ public class ParticipanteService {
     public int create(CreateParticipanteBodyDTO body) throws Exception {
         return this.cursoRepository.create(body);
     }
+
+    public void delete(int turmaId, int funcionarioId) throws Exception {
+        this.cursoRepository.delete(turmaId, funcionarioId);
+    }
 }

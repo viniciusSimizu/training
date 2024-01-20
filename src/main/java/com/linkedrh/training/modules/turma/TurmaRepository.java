@@ -43,7 +43,7 @@ public class TurmaRepository {
             ResultSet result = pstmt.executeQuery();
             result.next();
 
-            this.log.debug(result.getStatement().toString());
+            this.log.debug(pstmt.toString());
 
             int codigo = result.getInt("codigo");
             result.close();
@@ -77,6 +77,8 @@ public class TurmaRepository {
                 PreparedStatement pstmt = conn.prepareStatement(query); ) {
             pstmt.setInt(1, cursoId);
             ResultSet result = pstmt.executeQuery();
+
+            this.log.debug(pstmt.toString());
 
             while (result.next()) {
                 Turma turma = new Turma();
