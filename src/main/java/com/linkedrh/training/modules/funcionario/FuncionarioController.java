@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -76,5 +77,26 @@ public class FuncionarioController {
         }
 
         return new ResponseEntity<Object>(funcionarios, HttpStatus.CREATED);
+    }
+
+    @PutMapping(
+            path = "/{funcionarioId}/ativo/{ativo}",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object> updateAtivoField(
+            @PathVariable int funcionarioId, @PathVariable boolean ativo) {
+
+        final String service = "atualizar status do funcionario";
+        LogMessageHandler.infoEndpointRegistry(service, this.log);
+
+        try {
+            this.service.updateAtivoField(funcionarioId, ativo);
+
+        } catch (Exception except) {
+            final Map<String, Object> response = new HashMap<>();
+            response.put("exception", except.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return new ResponseEntity<Object>(HttpStatus.OK);
     }
 }

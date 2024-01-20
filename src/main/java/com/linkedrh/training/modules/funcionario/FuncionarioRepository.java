@@ -102,4 +102,27 @@ public class FuncionarioRepository {
 
         return funcionarios;
     }
+
+    public void updateAtivoField(int funcionarioId, boolean ativo) throws Exception {
+        final String query =
+                """
+								UPDATE funcionario
+								SET ativo = ?
+								WHERE codigo = ?
+				""";
+
+        try (Connection conn = this.sqlManager.getConnection();
+                PreparedStatement pstmt = conn.prepareStatement(query); ) {
+            pstmt.setBoolean(1, ativo);
+            pstmt.setInt(2, funcionarioId);
+
+            pstmt.executeUpdate();
+
+            this.log.debug(pstmt.toString());
+
+        } catch (SQLException err) {
+            this.log.error(err.getMessage());
+            throw new Exception("Não foi possível atualizar o campo 'ativo' do Funcionário");
+        }
+    }
 }

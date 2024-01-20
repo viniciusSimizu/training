@@ -32,4 +32,8 @@ public class FuncionarioService {
 
         return formatedFuncionarios;
     }
+
+    public void updateAtivoField(int funcionarioId, boolean ativo) throws Exception {
+        this.cursoRepository.updateAtivoField(funcionarioId, ativo);
+    }
 }

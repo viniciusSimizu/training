@@ -13,7 +13,9 @@
 
   [X] POST
   [ ] PUT
+  [X] PUT campo ativo
   [ ] LIST by status
+  [ ] DELETE
   [ ] DELETE from Turmas
 
 - Turma:
