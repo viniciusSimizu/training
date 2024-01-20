@@ -2,6 +2,7 @@ package com.linkedrh.training.modules.curso;
 
 import com.linkedrh.training.lib.interfaces.IDatabaseManager;
 import com.linkedrh.training.modules.curso.dtos.CreateCursoBodyDTO;
+import com.linkedrh.training.modules.curso.entity.Curso;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +13,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Repository
 public class CursoRepository {
@@ -48,6 +51,47 @@ public class CursoRepository {
             this.log.error(err.getMessage());
             throw new Exception("Não foi possível criar o Curso");
         }
+    }
+
+    public List<Curso> list() throws Exception {
+        final String query =
+                """
+				SELECT
+					curso.nome AS nome,
+					curso.duracao AS duracao,
+					curso.ativo AS ativo,
+					COUNT(turma.codigo) AS quantidadeTurmas,
+					MIN(turma.inicio) FILTER(WHERE turma.inicio >= NOW()) AS dataInicioMaisProxima
+				FROM curso
+				LEFT JOIN turma ON turma.curso_id = curso.codigo
+				GROUP BY curso.codigo
+				""";
+
+        List<Curso> cursos = new ArrayList<>();
+
+        try (Connection conn = this.sqlManager.getConnection();
+                PreparedStatement pstmt = conn.prepareStatement(query); ) {
+            ResultSet result = pstmt.executeQuery();
+
+            while (result.next()) {
+                Curso item = new Curso();
+                item.nome = result.getString("nome");
+                item.duracao = result.getInt("duracao");
+                item.ativo = result.getBoolean("ativo");
+                item.quantidadeTurmas = result.getInt("quantidadeTurmas");
+                item.dataInicioMaisProxima = result.getDate("dataInicioMaisProxima");
+
+                cursos.add(item);
+            }
+
+            result.close();
+
+        } catch (Exception e) {
+            this.log.error(e.getMessage());
+            throw new Exception("Não foi possível listar os cursos");
+        }
+
+        return cursos;
     }
 
     public void delete(int cursoId) throws Exception {

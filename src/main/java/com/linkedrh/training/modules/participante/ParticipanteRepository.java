@@ -48,32 +48,4 @@ public class ParticipanteRepository {
             throw new Exception("Não foi possível criar a Turma");
         }
     }
-
-    public int countTurmaParticipantes(int turmaId) throws Exception {
-        final String query =
-                """
-				SELECT COUNT(*)
-				FROM turma_participante
-				WHERE turma_id = ?
-				""";
-
-        try (Connection conn = this.sqlManager.getConnection();
-                PreparedStatement pstmt = conn.prepareStatement(query); ) {
-            pstmt.setInt(1, turmaId);
-
-            ResultSet result = pstmt.executeQuery();
-            result.next();
-
-            this.log.debug(result.getStatement().toString());
-
-            int quantidadeParticipantes = result.getInt(1);
-            result.close();
-
-            return quantidadeParticipantes;
-
-        } catch (SQLException err) {
-            this.log.error(err.getMessage());
-            throw new Exception("Não foi possível contar os Participantes da Turma");
-        }
-    }
 }

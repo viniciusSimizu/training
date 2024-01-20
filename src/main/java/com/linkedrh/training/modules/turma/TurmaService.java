@@ -1,8 +1,7 @@
 package com.linkedrh.training.modules.turma;
 
-import com.linkedrh.training.modules.participante.ParticipanteRepository;
 import com.linkedrh.training.modules.turma.dtos.CreateTurmaBodyDTO;
-import com.linkedrh.training.modules.turma.dtos.TurmaByCursoResponseDTO;
+import com.linkedrh.training.modules.turma.dtos.ListTurmaByCursoResponseDTO;
 import com.linkedrh.training.modules.turma.entity.Turma;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,31 +14,23 @@ import java.util.List;
 public class TurmaService {
 
     @Autowired private TurmaRepository cursoRepository;
-    @Autowired private ParticipanteRepository participanteRepository;
 
     public int create(CreateTurmaBodyDTO body) throws Exception {
         return this.cursoRepository.create(body);
     }
 
-    public List<TurmaByCursoResponseDTO> listByCurso(int cursoId) throws Exception {
+    public List<ListTurmaByCursoResponseDTO> listByCurso(int cursoId) throws Exception {
         List<Turma> turmas = this.cursoRepository.listByCurso(cursoId);
 
-        List<TurmaByCursoResponseDTO> response = new ArrayList<>(turmas.size());
+        List<ListTurmaByCursoResponseDTO> formatedTurmas = new ArrayList<>(turmas.size());
 
         for (Turma turma : turmas) {
-            int quantidadeParticipantes =
-                    this.participanteRepository.countTurmaParticipantes(turma.getCodigo());
+            ListTurmaByCursoResponseDTO formatedTurma = new ListTurmaByCursoResponseDTO();
+            formatedTurma.buildFrom(turma);
 
-            TurmaByCursoResponseDTO item = new TurmaByCursoResponseDTO();
-            item.codigo = turma.getCodigo();
-            item.quantidadeParticipantes = quantidadeParticipantes;
-            item.inicio = turma.getInicio();
-            item.fim = turma.getFim();
-            item.local = turma.getLocal();
-
-            response.add(item);
+            formatedTurmas.add(formatedTurma);
         }
 
-        return response;
+        return formatedTurmas;
     }
 }
