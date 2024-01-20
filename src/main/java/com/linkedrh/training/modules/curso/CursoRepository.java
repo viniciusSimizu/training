@@ -49,4 +49,21 @@ public class CursoRepository {
             throw new Exception("Não foi possível criar o Curso");
         }
     }
+
+    public void delete(int cursoId) throws Exception {
+        final String query = """
+					DELETE FROM curso
+					WHERE codigo = ?
+				""";
+
+        try (Connection conn = this.sqlManager.getConnection();
+                PreparedStatement pstmt = conn.prepareStatement(query); ) {
+            pstmt.setInt(1, cursoId);
+            pstmt.executeUpdate();
+
+        } catch (SQLException err) {
+            this.log.error(err.getMessage());
+            throw new Exception("Não foi possível deletar o Curso");
+        }
+    }
 }

@@ -2,6 +2,7 @@ package com.linkedrh.training.modules.turma;
 
 import com.linkedrh.training.lib.interfaces.IDatabaseManager;
 import com.linkedrh.training.modules.turma.dtos.CreateTurmaBodyDTO;
+import com.linkedrh.training.modules.turma.entity.Turma;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +14,8 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Repository
 public class TurmaRepository {
@@ -49,6 +52,35 @@ public class TurmaRepository {
         } catch (SQLException err) {
             this.log.error(err.getMessage());
             throw new Exception("Não foi possível criar a Turma");
+        }
+    }
+
+    public void listByCursoId(int cursoId) {
+        final String query =
+                """
+				SELECT
+					codigo, inicio, fim, local
+				FROM turma
+				WHERE curso_id = ?
+				""";
+
+        List<Turma> turmas = new ArrayList<>();
+
+        try (Connection conn = this.sqlManager.getConnection();
+                PreparedStatement pstmt = conn.prepareStatement(query); ) {
+            pstmt.setInt(1, cursoId);
+            ResultSet result = pstmt.executeQuery();
+
+            while (result.next()) {
+                Turma turma = new Turma();
+                turma.setCodigo(result.getInt("codigo"));
+                turma.setInicio(result.getDate("inicio").toLocalDate());
+                turma.setFim(result.getDate("fim").toLocalDate());
+                turma.setLocal(result.getString("local"));
+            }
+
+        } catch (SQLException err) {
+            this.log.error(err.getMessage());
         }
     }
 }
