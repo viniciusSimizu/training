@@ -71,4 +71,28 @@ public class ParticipanteRepository {
             throw new Exception("Não foi possível criar a Turma");
         }
     }
+
+    public void deleteByFuncionario(int funcionarioId) throws Exception {
+        final String query =
+                """
+								DELETE FROM turma_participante AS participante
+								USING turma
+								WHERE participante.funcionario_id = ?
+									AND turma.inicio > NOW()
+									AND participante.turma_id = turma.codigo
+				""";
+
+        try (Connection conn = this.sqlManager.getConnection();
+                PreparedStatement pstmt = conn.prepareStatement(query); ) {
+            pstmt.setInt(1, funcionarioId);
+
+            pstmt.executeUpdate();
+
+            this.log.debug(pstmt.toString());
+
+        } catch (SQLException err) {
+            this.log.error(err.getMessage());
+            throw new Exception("Não foi possível criar o Funcionário");
+        }
+    }
 }

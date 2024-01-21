@@ -29,7 +29,7 @@
     [X] POST
     [X] DELETE
     [X] LIST by turma
-    [ ] DELETE by Funcionario from Turmas
+    [X] DELETE by Funcionario and Turma
 
 ## Data
 

@@ -17,4 +17,8 @@ public class ParticipanteService {
     public void delete(int turmaId, int funcionarioId) throws Exception {
         this.cursoRepository.delete(turmaId, funcionarioId);
     }
+
+    public void deleteByFuncionario(int funcionarioId) throws Exception {
+        this.cursoRepository.deleteByFuncionario(funcionarioId);
+    }
 }

@@ -73,4 +73,21 @@ public class ParticipanteController {
 
         return new ResponseEntity<Object>(HttpStatus.OK);
     }
+
+    @DeleteMapping(path = "/funcionario/{funcionarioId}")
+    public ResponseEntity<Object> delete(@PathVariable int funcionarioId) {
+
+        final String service = "deletar participantes por funcionário";
+        LogMessageHandler.infoEndpointRegistry(service, this.log);
+
+        try {
+            this.service.deleteByFuncionario(funcionarioId);
+
+        } catch (Exception except) {
+            Object response = ErrorHelper.createMessage(ErrorEnum.EXCEPTION, except.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return new ResponseEntity<Object>(HttpStatus.OK);
+    }
 }
