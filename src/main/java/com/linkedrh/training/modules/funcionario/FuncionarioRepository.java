@@ -102,7 +102,7 @@ public class FuncionarioRepository {
         return funcionarios;
     }
 
-    public List<Funcionario> listByTurma(int turmaId) throws Exception {
+    public List<Funcionario> listByTurma(int turmaId) {
         final String query =
                 """
 					SELECT
@@ -143,7 +143,6 @@ public class FuncionarioRepository {
 
         } catch (SQLException err) {
             this.log.error(err.getMessage());
-            throw new Exception("Não foi possível listar os Funcionários");
         }
 
         return funcionarios;

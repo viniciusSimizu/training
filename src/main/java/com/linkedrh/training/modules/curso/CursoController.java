@@ -1,8 +1,11 @@
 package com.linkedrh.training.modules.curso;
 
+import com.linkedrh.training.lib.enums.ErrorEnum;
+import com.linkedrh.training.lib.helpers.ErrorHelper;
 import com.linkedrh.training.lib.log.LogMessageHandler;
 import com.linkedrh.training.modules.curso.dtos.request.CreateCursoBodyDTO;
 import com.linkedrh.training.modules.curso.dtos.request.UpdateCursoBodyDTO;
+import com.linkedrh.training.modules.curso.dtos.response.CursoResponseForBetweenDatesCursoDTO;
 import com.linkedrh.training.modules.curso.dtos.response.CursoResponseForListCursoDTO;
 
 import org.slf4j.Logger;
@@ -21,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,10 +45,8 @@ public class CursoController {
         final String service = "criação de curso";
         LogMessageHandler.infoEndpointRegistry(service, this.log);
 
-        final Map<String, Object> response = new HashMap<>();
-
         if (!body.isValid()) {
-            response.put("requestBodyErrors", body.getErrors());
+            Object response = ErrorHelper.createMessage(ErrorEnum.VALIDATION, body.getErrors());
             return new ResponseEntity<Object>(response, HttpStatus.BAD_REQUEST);
         }
 
@@ -53,10 +55,11 @@ public class CursoController {
             codigo = this.service.create(body);
 
         } catch (Exception except) {
-            response.put("exception", except.getMessage());
+            Object response = ErrorHelper.createMessage(ErrorEnum.EXCEPTION, except.getMessage());
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
+        Map<String, Integer> response = new HashMap<>();
         response.put("codigo", codigo);
         return new ResponseEntity<Object>(response, HttpStatus.CREATED);
     }
@@ -66,16 +69,37 @@ public class CursoController {
         final String service = "listagem de cursos";
         LogMessageHandler.infoEndpointRegistry(service, this.log);
 
-        List<CursoResponseForListCursoDTO> response;
+        List<CursoResponseForListCursoDTO> cursos;
 
         try {
-            response = this.service.list();
+            cursos = this.service.list();
 
         } catch (Exception e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            Object response = ErrorHelper.createMessage(ErrorEnum.EXCEPTION, e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        return new ResponseEntity<Object>(response, HttpStatus.OK);
+        return new ResponseEntity<Object>(cursos, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "date/range/{inicio}/{fim}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object> listBetweenDates(
+            @PathVariable LocalDate inicio, @PathVariable LocalDate fim) {
+
+        final String service = "listagem de cursos entre datas";
+        LogMessageHandler.infoEndpointRegistry(service, this.log);
+
+        List<CursoResponseForBetweenDatesCursoDTO> cursos;
+
+        try {
+            cursos = this.service.listBetweenDates(inicio, fim);
+
+        } catch (Exception e) {
+            Object response = ErrorHelper.createMessage(ErrorEnum.EXCEPTION, e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return new ResponseEntity<Object>(cursos, HttpStatus.OK);
     }
 
     @PutMapping(
@@ -88,8 +112,7 @@ public class CursoController {
         LogMessageHandler.infoEndpointRegistry(service, this.log);
 
         if (!body.isValid()) {
-            Map<String, Object> response = new HashMap<>();
-            response.put("requestBodyErrors", body.getErrors());
+            Object response = ErrorHelper.createMessage(ErrorEnum.VALIDATION, body.getErrors());
             return new ResponseEntity<Object>(response, HttpStatus.BAD_REQUEST);
         }
 
@@ -97,8 +120,7 @@ public class CursoController {
             this.service.update(cursoId, body);
 
         } catch (Exception e) {
-            Map<String, Object> response = new HashMap<>();
-            response.put("exception", e.getMessage());
+            Object response = ErrorHelper.createMessage(ErrorEnum.EXCEPTION, e.getMessage());
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
@@ -116,8 +138,7 @@ public class CursoController {
             this.service.delete(cursoId, force);
 
         } catch (Exception e) {
-            Map<String, Object> response = new HashMap<>();
-            response.put("exception", e.getMessage());
+            Object response = ErrorHelper.createMessage(ErrorEnum.EXCEPTION, e.getMessage());
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 

@@ -1,5 +1,7 @@
 package com.linkedrh.training.modules.turma;
 
+import com.linkedrh.training.lib.enums.ErrorEnum;
+import com.linkedrh.training.lib.helpers.ErrorHelper;
 import com.linkedrh.training.lib.log.LogMessageHandler;
 import com.linkedrh.training.modules.turma.dtos.request.CreateTurmaBodyDTO;
 import com.linkedrh.training.modules.turma.dtos.request.UpdateTurmaBodyDTO;
@@ -40,10 +42,8 @@ public class TurmaController {
         final String service = "criação de turma";
         LogMessageHandler.infoEndpointRegistry(service, this.log);
 
-        Map<String, Object> response = new HashMap<>();
-
         if (!body.isValid()) {
-            response.put("requestBodyErrors", body.getErrors());
+            Object response = ErrorHelper.createMessage(ErrorEnum.VALIDATION, body.getErrors());
             return new ResponseEntity<Object>(response, HttpStatus.BAD_REQUEST);
         }
 
@@ -52,12 +52,12 @@ public class TurmaController {
             codigo = this.service.create(body);
 
         } catch (Exception except) {
-            response.put("exception", except.getMessage());
+            Object response = ErrorHelper.createMessage(ErrorEnum.EXCEPTION, except.getMessage());
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
+        Map<String, Integer> response = new HashMap<>();
         response.put("codigo", codigo);
-
         return new ResponseEntity<Object>(response, HttpStatus.CREATED);
     }
 
@@ -73,9 +73,8 @@ public class TurmaController {
             turmas = this.service.listByCurso(cursoId);
 
         } catch (Exception except) {
-            Map<String, Object> response = new HashMap<>();
-            response.put("exception", except.getMessage());
-            return new ResponseEntity<Object>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+            Object response = ErrorHelper.createMessage(ErrorEnum.EXCEPTION, except.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
         return new ResponseEntity<Object>(turmas, HttpStatus.OK);
@@ -89,8 +88,7 @@ public class TurmaController {
         LogMessageHandler.infoEndpointRegistry(service, this.log);
 
         if (!body.isValid()) {
-            Map<String, Object> response = new HashMap<>();
-            response.put("requestBodyErrors", body.getErrors());
+            Object response = ErrorHelper.createMessage(ErrorEnum.VALIDATION, body.getErrors());
             return new ResponseEntity<Object>(response, HttpStatus.BAD_REQUEST);
         }
 
@@ -98,8 +96,7 @@ public class TurmaController {
             this.service.update(turmaId, body);
 
         } catch (Exception except) {
-            Map<String, Object> response = new HashMap<>();
-            response.put("exception", except.getMessage());
+            Object response = ErrorHelper.createMessage(ErrorEnum.EXCEPTION, except.getMessage());
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
@@ -116,8 +113,7 @@ public class TurmaController {
             this.service.delete(turmaId);
 
         } catch (Exception except) {
-            Map<String, Object> response = new HashMap<>();
-            response.put("exception", except.getMessage());
+            Object response = ErrorHelper.createMessage(ErrorEnum.EXCEPTION, except.getMessage());
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 

@@ -5,7 +5,7 @@
 - Curso:
 
   [X] LIST
-  [ ] LIST by range of Inicio and Fim
+  [X] LIST by range of Inicio and Fim
   [X] POST
   [X] PUT
   [X] DELETE

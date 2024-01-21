@@ -9,6 +9,7 @@ import com.linkedrh.training.modules.funcionario.FuncionarioRepository;
 import com.linkedrh.training.modules.funcionario.dtos.response.CursoResponseForBetweenDatesFuncionarioDTO;
 import com.linkedrh.training.modules.funcionario.entity.Funcionario;
 import com.linkedrh.training.modules.turma.TurmaRepository;
+import com.linkedrh.training.modules.turma.dtos.response.CursoResponseForBetweenDatesTurmaDTO;
 import com.linkedrh.training.modules.turma.entity.Turma;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class CursoService {
@@ -32,46 +32,47 @@ public class CursoService {
 
     public List<CursoResponseForListCursoDTO> list() throws Exception {
         List<Curso> cursos = this.cursoRepository.list();
-        return cursos.stream().map(CursoResponseForListCursoDTO::new).collect(Collectors.toList());
+        return cursos.stream().map(CursoResponseForListCursoDTO::new).toList();
     }
 
     public List<CursoResponseForBetweenDatesCursoDTO> listBetweenDates(
             LocalDate inicio, LocalDate fim) throws Exception {
+
         List<Curso> cursos = this.cursoRepository.list();
-        List<CursoResponseForBetweenDatesCursoDTO> formatedCursos = new ArrayList<>();
 
-        for (Curso curso : cursos) {
-            List<Turma> turmas = this.turmaRepository.listByCurso(curso.codigo);
-            List<ListTurmaBetweenDatesResponseDTO> formatedTurmas = new ArrayList<>();
+        return cursos.stream()
+                .map(curso -> this.handleCursoResponseForBetweenDatesCurso(curso, inicio, fim))
+                .toList();
+    }
 
-            for (Turma turma : turmas) {
-                List<Funcionario> funcionarios =
-                        this.funcionarioRepository.listByTurma(turma.codigo);
-                List<CursoResponseForBetweenDatesFuncionarioDTO> formatedFuncionarios =
-                        new ArrayList<>();
+    private CursoResponseForBetweenDatesCursoDTO handleCursoResponseForBetweenDatesCurso(
+            Curso curso, LocalDate inicio, LocalDate fim) {
+        CursoResponseForBetweenDatesCursoDTO cursoResponse =
+                new CursoResponseForBetweenDatesCursoDTO(curso);
 
-                for (Funcionario funcionario : funcionarios) {
-                    CursoResponseForBetweenDatesFuncionarioDTO formatedFuncionario =
-                            new CursoResponseForBetweenDatesFuncionarioDTO();
-                    formatedFuncionario.buildFrom(funcionario);
-                    formatedFuncionarios.add(formatedFuncionario);
-                }
+        List<Turma> turmas = this.turmaRepository.listBetweenDateRange(curso.codigo, inicio, fim);
 
-                ListTurmaBetweenDatesResponseDTO formatedTurma =
-                        new ListTurmaBetweenDatesResponseDTO();
-                formatedTurma.buildFrom(turma);
-                formatedTurma.funcionarios = formatedFuncionarios;
-                formatedTurmas.add(formatedTurma);
-            }
+        cursoResponse.turmas =
+                turmas.stream()
+                        .map(turma -> this.handleCursoResponseForBetweenDatesTurma(turma))
+                        .toList();
 
-            CursoResponseForBetweenDatesCursoDTO formatedCurso =
-                    new CursoResponseForBetweenDatesCursoDTO();
-            formatedCurso.buildFrom(curso);
-            formatedCurso.turmas = formatedTurmas;
-            formatedCursos.add(formatedCurso);
+        return cursoResponse;
+    }
+
+    private CursoResponseForBetweenDatesTurmaDTO handleCursoResponseForBetweenDatesTurma(
+            Turma turma) {
+        CursoResponseForBetweenDatesTurmaDTO turmaResponse =
+                new CursoResponseForBetweenDatesTurmaDTO(turma);
+        turmaResponse.funcionarios = new ArrayList<>();
+
+        List<Funcionario> funcionarios = this.funcionarioRepository.listByTurma(turma.codigo);
+        for (Funcionario funcionario : funcionarios) {
+            turmaResponse.funcionarios.add(
+                    new CursoResponseForBetweenDatesFuncionarioDTO(funcionario));
         }
 
-        return formatedCursos;
+        return turmaResponse;
     }
 
     public void update(int cursoId, UpdateCursoBodyDTO body) throws Exception {

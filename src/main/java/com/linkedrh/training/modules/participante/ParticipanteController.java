@@ -1,5 +1,7 @@
 package com.linkedrh.training.modules.participante;
 
+import com.linkedrh.training.lib.enums.ErrorEnum;
+import com.linkedrh.training.lib.helpers.ErrorHelper;
 import com.linkedrh.training.lib.log.LogMessageHandler;
 import com.linkedrh.training.modules.participante.dtos.request.CreateParticipanteBodyDTO;
 
@@ -35,10 +37,8 @@ public class ParticipanteController {
         final String service = "criação de participante";
         LogMessageHandler.infoEndpointRegistry(service, this.log);
 
-        final Map<String, Object> response = new HashMap<>();
-
         if (!body.isValid()) {
-            response.put("requestBodyErrors", body.getErrors());
+            Object response = ErrorHelper.createMessage(ErrorEnum.VALIDATION, body.getErrors());
             return new ResponseEntity<Object>(response, HttpStatus.BAD_REQUEST);
         }
 
@@ -47,12 +47,12 @@ public class ParticipanteController {
             codigo = this.service.create(body);
 
         } catch (Exception except) {
-            response.put("exception", except.getMessage());
+            Object response = ErrorHelper.createMessage(ErrorEnum.EXCEPTION, except.getMessage());
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
+        Map<String, Integer> response = new HashMap<>();
         response.put("codigo", codigo);
-
         return new ResponseEntity<Object>(response, HttpStatus.CREATED);
     }
 
@@ -67,8 +67,7 @@ public class ParticipanteController {
             this.service.delete(turmaId, funcionarioId);
 
         } catch (Exception except) {
-            Map<String, Object> response = new HashMap<>();
-            response.put("exception", except.getMessage());
+            Object response = ErrorHelper.createMessage(ErrorEnum.EXCEPTION, except.getMessage());
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 

@@ -1,6 +1,6 @@
 package com.linkedrh.training.modules.turma.dtos.response;
 
-import com.linkedrh.training.modules.funcionario.dtos.CursoResponseForBetweenDatesFuncionarioDTO;
+import com.linkedrh.training.modules.funcionario.dtos.response.CursoResponseForBetweenDatesFuncionarioDTO;
 import com.linkedrh.training.modules.turma.entity.Turma;
 
 import java.time.LocalDate;

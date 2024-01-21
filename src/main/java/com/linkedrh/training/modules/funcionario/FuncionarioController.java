@@ -1,5 +1,7 @@
 package com.linkedrh.training.modules.funcionario;
 
+import com.linkedrh.training.lib.enums.ErrorEnum;
+import com.linkedrh.training.lib.helpers.ErrorHelper;
 import com.linkedrh.training.lib.log.LogMessageHandler;
 import com.linkedrh.training.modules.funcionario.dtos.request.CreateFuncionarioBodyDTO;
 import com.linkedrh.training.modules.funcionario.dtos.request.UpdateFuncionarioBodyDTO;
@@ -39,10 +41,8 @@ public class FuncionarioController {
         final String service = "criação de funcionário";
         LogMessageHandler.infoEndpointRegistry(service, this.log);
 
-        final Map<String, Object> response = new HashMap<>();
-
         if (!body.isValid()) {
-            response.put("requestBodyErrors", body.getErrors());
+            Object response = ErrorHelper.createMessage(ErrorEnum.VALIDATION, body.getErrors());
             return new ResponseEntity<Object>(response, HttpStatus.BAD_REQUEST);
         }
 
@@ -51,12 +51,12 @@ public class FuncionarioController {
             codigo = this.service.create(body);
 
         } catch (Exception except) {
-            response.put("exception", except.getMessage());
+            Object response = ErrorHelper.createMessage(ErrorEnum.EXCEPTION, except.getMessage());
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
+        Map<String, Integer> response = new HashMap<>();
         response.put("codigo", codigo);
-
         return new ResponseEntity<Object>(response, HttpStatus.CREATED);
     }
 
@@ -72,8 +72,7 @@ public class FuncionarioController {
             funcionarios = this.service.listByTurma(turmaId);
 
         } catch (Exception except) {
-            final Map<String, Object> response = new HashMap<>();
-            response.put("exception", except.getMessage());
+            Object response = ErrorHelper.createMessage(ErrorEnum.EXCEPTION, except.getMessage());
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
@@ -91,8 +90,7 @@ public class FuncionarioController {
         LogMessageHandler.infoEndpointRegistry(service, this.log);
 
         if (!body.isValid()) {
-            final Map<String, Object> response = new HashMap<>();
-            response.put("requestBodyErrors", body.getErrors());
+            Object response = ErrorHelper.createMessage(ErrorEnum.VALIDATION, body.getErrors());
             return new ResponseEntity<Object>(response, HttpStatus.BAD_REQUEST);
         }
 
@@ -100,8 +98,7 @@ public class FuncionarioController {
             this.service.update(funcionarioId, body);
 
         } catch (Exception except) {
-            final Map<String, Object> response = new HashMap<>();
-            response.put("exception", except.getMessage());
+            Object response = ErrorHelper.createMessage(ErrorEnum.EXCEPTION, except.getMessage());
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
@@ -121,8 +118,7 @@ public class FuncionarioController {
             this.service.updateAtivoField(funcionarioId, ativo);
 
         } catch (Exception except) {
-            final Map<String, Object> response = new HashMap<>();
-            response.put("exception", except.getMessage());
+            Object response = ErrorHelper.createMessage(ErrorEnum.EXCEPTION, except.getMessage());
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
