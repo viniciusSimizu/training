@@ -2,6 +2,7 @@ package com.linkedrh.training.modules.turma;
 
 import com.linkedrh.training.lib.interfaces.IDatabaseManager;
 import com.linkedrh.training.modules.turma.dtos.CreateTurmaBodyDTO;
+import com.linkedrh.training.modules.turma.dtos.UpdateTurmaBodyDTO;
 import com.linkedrh.training.modules.turma.entity.Turma;
 
 import org.slf4j.Logger;
@@ -97,5 +98,31 @@ public class TurmaRepository {
         }
 
         return turmas;
+    }
+
+    public void update(int turmaId, UpdateTurmaBodyDTO body) throws Exception {
+        final String query =
+                """
+								UPDATE turma
+								SET inicio = ?,
+										fim = ?,
+										local = ?
+								WHERE codigo = ?
+				""";
+
+        try (Connection conn = this.sqlManager.getConnection();
+                PreparedStatement pstmt = conn.prepareStatement(query); ) {
+            pstmt.setDate(1, Date.valueOf(body.inicio));
+            pstmt.setDate(2, Date.valueOf(body.fim));
+            pstmt.setString(3, body.local);
+
+            pstmt.executeUpdate();
+
+            this.log.debug(pstmt.toString());
+
+        } catch (SQLException err) {
+            this.log.error(err.getMessage());
+            throw new Exception("Não foi possível atualizar a Turma");
+        }
     }
 }

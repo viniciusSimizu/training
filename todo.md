@@ -19,7 +19,7 @@
 - Turma:
 
   [X] POST
-  [ ] PUT
+  [X] PUT
   [ ] DELETE
   [X] LIST by Curso
   [ ] LIST by range of Inicio and Fim

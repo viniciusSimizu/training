@@ -2,6 +2,7 @@ package com.linkedrh.training.modules.turma;
 
 import com.linkedrh.training.modules.turma.dtos.CreateTurmaBodyDTO;
 import com.linkedrh.training.modules.turma.dtos.ListTurmaByCursoResponseDTO;
+import com.linkedrh.training.modules.turma.dtos.UpdateTurmaBodyDTO;
 import com.linkedrh.training.modules.turma.entity.Turma;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,5 +33,9 @@ public class TurmaService {
         }
 
         return formatedTurmas;
+    }
+
+    public void update(int turmaId, UpdateTurmaBodyDTO body) throws Exception {
+        this.cursoRepository.update(turmaId, body);
     }
 }

@@ -3,6 +3,7 @@ package com.linkedrh.training.modules.turma;
 import com.linkedrh.training.lib.log.LogMessageHandler;
 import com.linkedrh.training.modules.turma.dtos.CreateTurmaBodyDTO;
 import com.linkedrh.training.modules.turma.dtos.ListTurmaByCursoResponseDTO;
+import com.linkedrh.training.modules.turma.dtos.UpdateTurmaBodyDTO;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -76,5 +78,30 @@ public class TurmaController {
         }
 
         return new ResponseEntity<Object>(turmas, HttpStatus.OK);
+    }
+
+    @PutMapping(path = "/{turmaId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object> create(
+            @PathVariable int turmaId, @RequestBody UpdateTurmaBodyDTO body) {
+
+        final String service = "atualização da turma";
+        LogMessageHandler.infoEndpointRegistry(service, this.log);
+
+        if (!body.isValid()) {
+            Map<String, Object> response = new HashMap<>();
+            response.put("requestBodyErrors", body.getErrors());
+            return new ResponseEntity<Object>(response, HttpStatus.BAD_REQUEST);
+        }
+
+        try {
+            this.service.update(turmaId, body);
+
+        } catch (Exception except) {
+            Map<String, Object> response = new HashMap<>();
+            response.put("exception", except.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return new ResponseEntity<Object>(HttpStatus.CREATED);
     }
 }
