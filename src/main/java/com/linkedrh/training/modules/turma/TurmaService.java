@@ -38,4 +38,8 @@ public class TurmaService {
     public void update(int turmaId, UpdateTurmaBodyDTO body) throws Exception {
         this.cursoRepository.update(turmaId, body);
     }
+
+    public void delete(int turmaId) throws Exception {
+        this.cursoRepository.delete(turmaId);
+    }
 }

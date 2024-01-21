@@ -20,7 +20,7 @@
 
   [X] POST
   [X] PUT
-  [ ] DELETE
+  [X] DELETE
   [X] LIST by Curso
   [ ] LIST by range of Inicio and Fim
   [ ] FIND by Curso and Funcionario

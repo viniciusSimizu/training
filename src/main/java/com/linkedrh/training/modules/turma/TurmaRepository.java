@@ -125,4 +125,36 @@ public class TurmaRepository {
             throw new Exception("Não foi possível atualizar a Turma");
         }
     }
+
+    public void delete(int turmaId) throws Exception {
+        final String queryParticipante =
+                """
+								DELETE FROM turma_participante
+								WHERE turma_id = ?
+				""";
+        final String queryTurma = """
+								DELETE FROM turma
+								WHERE codigo = ?
+				""";
+
+        try (Connection conn = this.sqlManager.getConnection();
+                PreparedStatement pstmtParticipante = conn.prepareStatement(queryParticipante);
+                PreparedStatement pstmtTurma = conn.prepareStatement(queryTurma); ) {
+            conn.setAutoCommit(false);
+
+            pstmtParticipante.setInt(1, turmaId);
+            pstmtParticipante.executeUpdate();
+            this.log.debug(pstmtParticipante.toString());
+
+            pstmtTurma.setInt(1, turmaId);
+            pstmtTurma.executeUpdate();
+            this.log.debug(pstmtTurma.toString());
+
+            conn.commit();
+
+        } catch (SQLException err) {
+            this.log.error(err.getMessage());
+            throw new Exception("Não foi possível deletar a Turma");
+        }
+    }
 }

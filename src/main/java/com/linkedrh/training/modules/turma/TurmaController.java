@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -103,5 +104,23 @@ public class TurmaController {
         }
 
         return new ResponseEntity<Object>(HttpStatus.CREATED);
+    }
+
+    @DeleteMapping(path = "/{turmaId}")
+    public ResponseEntity<Object> create(@PathVariable int turmaId) {
+
+        final String service = "deletar turma";
+        LogMessageHandler.infoEndpointRegistry(service, this.log);
+
+        try {
+            this.service.delete(turmaId);
+
+        } catch (Exception except) {
+            Map<String, Object> response = new HashMap<>();
+            response.put("exception", except.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return new ResponseEntity<Object>(HttpStatus.OK);
     }
 }
