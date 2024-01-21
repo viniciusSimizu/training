@@ -1,7 +1,7 @@
 package com.linkedrh.training.modules.participante;
 
 import com.linkedrh.training.lib.interfaces.IDatabaseManager;
-import com.linkedrh.training.modules.participante.dtos.CreateParticipanteBodyDTO;
+import com.linkedrh.training.modules.participante.dtos.request.CreateParticipanteBodyDTO;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

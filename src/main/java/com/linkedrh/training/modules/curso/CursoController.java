@@ -1,9 +1,9 @@
 package com.linkedrh.training.modules.curso;
 
 import com.linkedrh.training.lib.log.LogMessageHandler;
-import com.linkedrh.training.modules.curso.dtos.CreateCursoBodyDTO;
-import com.linkedrh.training.modules.curso.dtos.ListCursoResponseDTO;
-import com.linkedrh.training.modules.curso.dtos.UpdateCursoBodyDTO;
+import com.linkedrh.training.modules.curso.dtos.request.CreateCursoBodyDTO;
+import com.linkedrh.training.modules.curso.dtos.request.UpdateCursoBodyDTO;
+import com.linkedrh.training.modules.curso.dtos.response.CursoResponseForListCursoDTO;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,7 +66,7 @@ public class CursoController {
         final String service = "listagem de cursos";
         LogMessageHandler.infoEndpointRegistry(service, this.log);
 
-        List<ListCursoResponseDTO> response;
+        List<CursoResponseForListCursoDTO> response;
 
         try {
             response = this.service.list();

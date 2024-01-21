@@ -1,4 +1,4 @@
-package com.linkedrh.training.modules.turma.dtos;
+package com.linkedrh.training.modules.turma.dtos.request;
 
 import com.linkedrh.training.lib.interfaces.Validated;
 import com.linkedrh.training.modules.turma.helpers.TurmaHelper;

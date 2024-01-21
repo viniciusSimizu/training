@@ -1,9 +1,9 @@
 package com.linkedrh.training.modules.turma;
 
 import com.linkedrh.training.lib.log.LogMessageHandler;
-import com.linkedrh.training.modules.turma.dtos.CreateTurmaBodyDTO;
-import com.linkedrh.training.modules.turma.dtos.ListTurmaByCursoResponseDTO;
-import com.linkedrh.training.modules.turma.dtos.UpdateTurmaBodyDTO;
+import com.linkedrh.training.modules.turma.dtos.request.CreateTurmaBodyDTO;
+import com.linkedrh.training.modules.turma.dtos.request.UpdateTurmaBodyDTO;
+import com.linkedrh.training.modules.turma.dtos.response.TurmaResponseForListByCursoTurmaDTO;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,7 +67,7 @@ public class TurmaController {
         final String service = "listagem de turmas por curso";
         LogMessageHandler.infoEndpointRegistry(service, this.log);
 
-        List<ListTurmaByCursoResponseDTO> turmas;
+        List<TurmaResponseForListByCursoTurmaDTO> turmas;
 
         try {
             turmas = this.service.listByCurso(cursoId);

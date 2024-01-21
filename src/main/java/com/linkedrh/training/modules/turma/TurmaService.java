@@ -1,15 +1,15 @@
 package com.linkedrh.training.modules.turma;
 
-import com.linkedrh.training.modules.turma.dtos.CreateTurmaBodyDTO;
-import com.linkedrh.training.modules.turma.dtos.ListTurmaByCursoResponseDTO;
-import com.linkedrh.training.modules.turma.dtos.UpdateTurmaBodyDTO;
+import com.linkedrh.training.modules.turma.dtos.request.CreateTurmaBodyDTO;
+import com.linkedrh.training.modules.turma.dtos.request.UpdateTurmaBodyDTO;
+import com.linkedrh.training.modules.turma.dtos.response.TurmaResponseForListByCursoTurmaDTO;
 import com.linkedrh.training.modules.turma.entity.Turma;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class TurmaService {
@@ -20,19 +20,11 @@ public class TurmaService {
         return this.cursoRepository.create(body);
     }
 
-    public List<ListTurmaByCursoResponseDTO> listByCurso(int cursoId) throws Exception {
+    public List<TurmaResponseForListByCursoTurmaDTO> listByCurso(int cursoId) throws Exception {
         List<Turma> turmas = this.cursoRepository.listByCurso(cursoId);
-
-        List<ListTurmaByCursoResponseDTO> formatedTurmas = new ArrayList<>(turmas.size());
-
-        for (Turma turma : turmas) {
-            ListTurmaByCursoResponseDTO formatedTurma = new ListTurmaByCursoResponseDTO();
-            formatedTurma.buildFrom(turma);
-
-            formatedTurmas.add(formatedTurma);
-        }
-
-        return formatedTurmas;
+        return turmas.stream()
+                .map(TurmaResponseForListByCursoTurmaDTO::new)
+                .collect(Collectors.toList());
     }
 
     public void update(int turmaId, UpdateTurmaBodyDTO body) throws Exception {

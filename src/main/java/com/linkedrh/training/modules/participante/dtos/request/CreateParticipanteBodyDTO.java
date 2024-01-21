@@ -1,4 +1,4 @@
-package com.linkedrh.training.modules.participante.dtos;
+package com.linkedrh.training.modules.participante.dtos.request;
 
 import com.linkedrh.training.lib.interfaces.Validated;
 import com.linkedrh.training.modules.participante.helpers.ParticipanteHelper;

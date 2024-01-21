@@ -1,19 +1,17 @@
-package com.linkedrh.training.modules.funcionario.dtos;
+package com.linkedrh.training.modules.funcionario.dtos.response;
 
-import com.linkedrh.training.lib.interfaces.BuildableDTO;
 import com.linkedrh.training.modules.funcionario.entity.Funcionario;
 
 import java.time.LocalDate;
 
-public class ListFuncionarioByTurmaResponseDTO implements BuildableDTO<Funcionario> {
+public class FuncionarioResponseListByTurmaFuncionario {
 
     public int codigo;
     public String nome, cpf, cargo;
     public LocalDate nascimento, admissao;
     public Boolean ativo;
 
-    @Override
-    public void buildFrom(Funcionario entity) {
+    public FuncionarioResponseListByTurmaFuncionario(Funcionario entity) {
         this.codigo = entity.codigo;
         this.nome = entity.nome;
         this.cpf = entity.cpf;

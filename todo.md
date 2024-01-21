@@ -5,6 +5,7 @@
 - Curso:
 
   [X] LIST
+  [ ] LIST by range of Inicio and Fim
   [X] POST
   [X] PUT
   [X] DELETE
@@ -22,7 +23,6 @@
   [X] PUT
   [X] DELETE
   [X] LIST by Curso
-  [ ] LIST by range of Inicio and Fim
   [ ] FIND by Curso and Funcionario
 
   - Participante:

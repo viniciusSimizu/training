@@ -1,4 +1,4 @@
-package com.linkedrh.training.modules.funcionario.dtos;
+package com.linkedrh.training.modules.funcionario.dtos.request;
 
 import com.linkedrh.training.lib.interfaces.Validated;
 import com.linkedrh.training.modules.funcionario.helpers.FuncionarioHelper;

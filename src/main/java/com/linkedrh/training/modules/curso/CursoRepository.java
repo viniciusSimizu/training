@@ -1,8 +1,8 @@
 package com.linkedrh.training.modules.curso;
 
 import com.linkedrh.training.lib.interfaces.IDatabaseManager;
-import com.linkedrh.training.modules.curso.dtos.CreateCursoBodyDTO;
-import com.linkedrh.training.modules.curso.dtos.UpdateCursoBodyDTO;
+import com.linkedrh.training.modules.curso.dtos.request.CreateCursoBodyDTO;
+import com.linkedrh.training.modules.curso.dtos.request.UpdateCursoBodyDTO;
 import com.linkedrh.training.modules.curso.entity.Curso;
 
 import org.slf4j.Logger;

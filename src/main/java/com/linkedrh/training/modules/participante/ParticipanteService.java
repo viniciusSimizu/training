@@ -1,6 +1,6 @@
 package com.linkedrh.training.modules.participante;
 
-import com.linkedrh.training.modules.participante.dtos.CreateParticipanteBodyDTO;
+import com.linkedrh.training.modules.participante.dtos.request.CreateParticipanteBodyDTO;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
