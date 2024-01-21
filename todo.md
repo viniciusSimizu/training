@@ -12,11 +12,9 @@
 - Funcionário:
 
   [X] POST
-  [ ] PUT
+  [X] PUT
   [X] PUT campo ativo
-  [ ] LIST by status
-  [ ] DELETE
-  [ ] DELETE from Turmas
+  [X] LIST where ativo
 
 - Turma:
 
@@ -31,6 +29,7 @@
     [X] POST
     [X] DELETE
     [X] LIST by turma
+    [ ] DELETE by Funcionario from Turmas
 
 ## Data
 

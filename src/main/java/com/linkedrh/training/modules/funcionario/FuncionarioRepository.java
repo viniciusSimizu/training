@@ -57,6 +57,51 @@ public class FuncionarioRepository {
         }
     }
 
+    public List<Funcionario> list(Boolean ativo) throws Exception {
+        StringBuilder query = new StringBuilder();
+        query.append(
+                """
+					SELECT
+						codigo, nome, cpf, nascimento, cargo, admissao, ativo
+					FROM funcionario
+				""");
+
+        if (ativo == true) {
+            query.append(" WHERE ativo = TRUE");
+        } else if (ativo == false) {
+            query.append(" WHERE ativo = FALSE");
+        }
+
+        query.append(" ORDER BY nome ASC");
+
+        List<Funcionario> funcionarios = new ArrayList<>();
+
+        try (Connection conn = this.sqlManager.getConnection();
+                PreparedStatement pstmt = conn.prepareStatement(query.toString()); ) {
+            ResultSet result = pstmt.executeQuery();
+            this.log.debug(pstmt.toString());
+
+            while (result.next()) {
+                Funcionario funcionario = new Funcionario();
+                funcionario.codigo = result.getInt("codigo");
+                funcionario.nome = result.getString("nome");
+                funcionario.cpf = result.getString("cpf");
+                funcionario.nascimento = result.getDate("nascimento");
+                funcionario.cargo = result.getString("cargo");
+                funcionario.admissao = result.getDate("admissao");
+                funcionario.ativo = result.getBoolean("ativo");
+
+                funcionarios.add(funcionario);
+            }
+
+        } catch (SQLException err) {
+            this.log.error(err.getMessage());
+            throw new Exception("Não foi possível listar os Funcionários");
+        }
+
+        return funcionarios;
+    }
+
     public List<Funcionario> listByTurma(int turmaId) throws Exception {
         final String query =
                 """
