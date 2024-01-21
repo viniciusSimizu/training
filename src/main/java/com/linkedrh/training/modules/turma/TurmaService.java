@@ -2,6 +2,7 @@ package com.linkedrh.training.modules.turma;
 
 import com.linkedrh.training.modules.turma.dtos.request.CreateTurmaBodyDTO;
 import com.linkedrh.training.modules.turma.dtos.request.UpdateTurmaBodyDTO;
+import com.linkedrh.training.modules.turma.dtos.response.TurmaResponseForFindByCursoAndFuncionarioDTO;
 import com.linkedrh.training.modules.turma.dtos.response.TurmaResponseForListByCursoTurmaDTO;
 import com.linkedrh.training.modules.turma.entity.Turma;
 
@@ -22,6 +23,12 @@ public class TurmaService {
     public List<TurmaResponseForListByCursoTurmaDTO> listByCurso(int cursoId) throws Exception {
         List<Turma> turmas = this.cursoRepository.listByCurso(cursoId);
         return turmas.stream().map(TurmaResponseForListByCursoTurmaDTO::new).toList();
+    }
+
+    public TurmaResponseForFindByCursoAndFuncionarioDTO findByCursoAndFuncionario(
+            int cursoId, int funcionarioId) throws Exception {
+        Turma turma = this.cursoRepository.findTurmaByCursoAndFuncionario(cursoId, funcionarioId);
+        return new TurmaResponseForFindByCursoAndFuncionarioDTO(turma);
     }
 
     public void update(int turmaId, UpdateTurmaBodyDTO body) throws Exception {

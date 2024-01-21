@@ -23,7 +23,7 @@
   [X] PUT
   [X] DELETE
   [X] LIST by Curso
-  [ ] FIND by Curso and Funcionario
+  [X] FIND by Curso and Funcionario
 
   - Participante:
     [X] POST

@@ -5,6 +5,7 @@ import com.linkedrh.training.lib.helpers.ErrorHelper;
 import com.linkedrh.training.lib.log.LogMessageHandler;
 import com.linkedrh.training.modules.turma.dtos.request.CreateTurmaBodyDTO;
 import com.linkedrh.training.modules.turma.dtos.request.UpdateTurmaBodyDTO;
+import com.linkedrh.training.modules.turma.dtos.response.TurmaResponseForFindByCursoAndFuncionarioDTO;
 import com.linkedrh.training.modules.turma.dtos.response.TurmaResponseForListByCursoTurmaDTO;
 
 import org.slf4j.Logger;
@@ -78,6 +79,31 @@ public class TurmaController {
         }
 
         return new ResponseEntity<Object>(turmas, HttpStatus.OK);
+    }
+
+    @GetMapping(
+            path = "/curso/{cursoId}/funcionario/{funcionarioId}",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object> findByCursoAndFuncionario(
+            @PathVariable int cursoId, @PathVariable int funcionarioId) {
+
+        final String service = "buscar turma por curso e funcionário";
+        LogMessageHandler.infoEndpointRegistry(service, this.log);
+
+        TurmaResponseForFindByCursoAndFuncionarioDTO turma;
+
+        try {
+            turma = this.service.findByCursoAndFuncionario(cursoId, funcionarioId);
+
+        } catch (Exception except) {
+            Object response = ErrorHelper.createMessage(ErrorEnum.EXCEPTION, except.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        if (turma == null) {
+            return new ResponseEntity<Object>(turma, HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<Object>(turma, HttpStatus.OK);
     }
 
     @PutMapping(path = "/{turmaId}", consumes = MediaType.APPLICATION_JSON_VALUE)

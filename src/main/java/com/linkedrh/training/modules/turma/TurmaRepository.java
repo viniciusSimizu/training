@@ -112,7 +112,7 @@ public class TurmaRepository {
 					COUNT(participante.codigo) AS quantidadeParticipantes
 				FROM turma
 				LEFT JOIN turma_participante participante ON participante.turma_id = turma.codigo
-				WHERE curso_id = ?
+				WHERE turma.curso_id = ?
 				AND turma.inicio BETWEEN ? AND ?
 				GROUP BY turma.codigo
 				ORDER BY inicio, fim
@@ -146,6 +146,50 @@ public class TurmaRepository {
         }
 
         return turmas;
+    }
+
+    public Turma findTurmaByCursoAndFuncionario(int cursoId, int funcionarioId) {
+        final String query =
+                """
+				SELECT
+					turma.codigo AS codigo,
+					turma.inicio AS inicio,
+					turma.fim AS fim,
+					turma.local AS local
+				FROM turma
+				INNER JOIN turma_participante participante
+					ON participante.turma_id = turma.codigo
+				WHERE turma.curso_id = ?
+					AND participante.funcionario_id = ?
+				GROUP BY turma.codigo
+				ORDER BY inicio DESC
+				LIMIT 1
+				""";
+
+        Turma turma = null;
+
+        try (Connection conn = this.sqlManager.getConnection();
+                PreparedStatement pstmt = conn.prepareStatement(query); ) {
+            pstmt.setInt(1, cursoId);
+            pstmt.setInt(2, funcionarioId);
+            ResultSet result = pstmt.executeQuery();
+
+            this.log.debug(pstmt.toString());
+
+            if (result.next()) {
+                turma = new Turma();
+                turma.codigo = result.getInt("codigo");
+                turma.inicio = result.getDate("inicio");
+                turma.fim = result.getDate("fim");
+                turma.local = result.getString("local");
+            }
+            result.close();
+
+        } catch (SQLException err) {
+            this.log.error(err.getMessage());
+        }
+
+        return turma;
     }
 
     public void update(int turmaId, UpdateTurmaBodyDTO body) throws Exception {
