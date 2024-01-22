@@ -7,11 +7,12 @@ import java.time.LocalDate;
 public class CursoResponseForListCursoDTO {
 
     public String nome;
-    public int duracao, quantidadeTurmas;
+    public int codigo, duracao, quantidadeTurmas;
     public boolean ativo;
     public LocalDate dataInicioMaisProxima;
 
     public CursoResponseForListCursoDTO(Curso entity) {
+        this.codigo = entity.codigo;
         this.nome = entity.nome;
         this.duracao = entity.duracao;
         this.quantidadeTurmas = entity.quantidadeTurmas;

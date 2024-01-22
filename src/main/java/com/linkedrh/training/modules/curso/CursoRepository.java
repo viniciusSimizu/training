@@ -64,6 +64,7 @@ public class CursoRepository {
 
             while (result.next()) {
                 Curso item = new Curso();
+                item.codigo = result.getInt("codigo");
                 item.nome = result.getString("nome");
                 item.duracao = result.getInt("duracao");
                 item.ativo = result.getBoolean("ativo");

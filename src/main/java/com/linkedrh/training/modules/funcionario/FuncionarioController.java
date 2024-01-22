@@ -5,6 +5,7 @@ import com.linkedrh.training.lib.helpers.ErrorHelper;
 import com.linkedrh.training.lib.log.LogMessageHandler;
 import com.linkedrh.training.modules.funcionario.dtos.request.CreateFuncionarioBodyDTO;
 import com.linkedrh.training.modules.funcionario.dtos.request.UpdateFuncionarioBodyDTO;
+import com.linkedrh.training.modules.funcionario.dtos.response.FuncionarioResponseList;
 import com.linkedrh.training.modules.funcionario.dtos.response.FuncionarioResponseListByTurmaFuncionario;
 import com.linkedrh.training.modules.funcionario.services.FuncionarioService;
 
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
@@ -59,6 +61,26 @@ public class FuncionarioController {
         Map<String, Integer> response = new HashMap<>();
         response.put("codigo", codigo);
         return new ResponseEntity<Object>(response, HttpStatus.CREATED);
+    }
+
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object> list(
+            @RequestParam(name = "ativo", required = false) Boolean ativo) {
+
+        final String service = "listagem de funcionario por status";
+        LogMessageHandler.infoEndpointRegistry(service, this.log);
+
+        List<FuncionarioResponseList> funcionarios;
+
+        try {
+            funcionarios = this.service.list(ativo);
+
+        } catch (Exception except) {
+            Object response = ErrorHelper.createMessage(ErrorEnum.EXCEPTION, except.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return new ResponseEntity<Object>(funcionarios, HttpStatus.CREATED);
     }
 
     @GetMapping(path = "/turma/{turmaId}", produces = MediaType.APPLICATION_JSON_VALUE)

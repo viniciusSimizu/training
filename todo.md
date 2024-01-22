@@ -27,7 +27,7 @@
 
   - Participante:
     [X] POST
-    [X] DELETE
+    [X] DELETE by Funcionario
     [X] LIST by turma
     [X] DELETE by Funcionario and Turma
 

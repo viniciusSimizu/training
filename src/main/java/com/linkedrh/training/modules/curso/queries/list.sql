@@ -1,4 +1,5 @@
 SELECT
+	curso.codigo AS codigo,
 	curso.nome AS nome,
 	curso.duracao AS duracao,
 	curso.ativo AS ativo,

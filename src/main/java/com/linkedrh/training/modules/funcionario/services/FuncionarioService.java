@@ -3,6 +3,7 @@ package com.linkedrh.training.modules.funcionario.services;
 import com.linkedrh.training.modules.funcionario.FuncionarioRepository;
 import com.linkedrh.training.modules.funcionario.dtos.request.CreateFuncionarioBodyDTO;
 import com.linkedrh.training.modules.funcionario.dtos.request.UpdateFuncionarioBodyDTO;
+import com.linkedrh.training.modules.funcionario.dtos.response.FuncionarioResponseList;
 import com.linkedrh.training.modules.funcionario.dtos.response.FuncionarioResponseListByTurmaFuncionario;
 import com.linkedrh.training.modules.funcionario.entity.Funcionario;
 
@@ -19,6 +20,11 @@ public class FuncionarioService {
 
     public int create(CreateFuncionarioBodyDTO body) throws Exception {
         return this.cursoRepository.create(body);
+    }
+
+    public List<FuncionarioResponseList> list(Boolean ativo) throws Exception {
+        List<Funcionario> funcionarios = this.cursoRepository.list(ativo);
+        return funcionarios.stream().map(FuncionarioResponseList::new).collect(Collectors.toList());
     }
 
     public List<FuncionarioResponseListByTurmaFuncionario> listByTurma(int turmaId)
