@@ -77,10 +77,10 @@
 
 ## Regras de Negócio
 
-[ ] Todas as operações que alteram o banco de dados, devem ser feitas usando transações
-[ ] Todos os endpoints devem registrar um log no nivel INFO no formato "O serviço <serviço> foi chamado", usando o log4j
-[ ] Todos os endpoints devem registrar um log no nivel DEBUG com o SQL rodado, usando o log4j
-[ ] Todos os endpoints devem verificar se o cabeçalho "Authorization" tem o valor "Bearer token_exercicio_rest", caso as condições não sejam atendidas, retornar HTTP CODE 403
+[X] Todas as operações que alteram o banco de dados, devem ser feitas usando transações
+[X] Todos os endpoints devem registrar um log no nivel INFO no formato "O serviço <serviço> foi chamado", usando o log4j
+[X] Todos os endpoints devem registrar um log no nivel DEBUG com o SQL rodado, usando o log4j
+[X] Todos os endpoints devem verificar se o cabeçalho "Authorization" tem o valor "Bearer token_exercicio_rest", caso as condições não sejam atendidas, retornar HTTP CODE 403
 [ ] Criar testes usando JUnit
 [ ] Documentar a API usando Swagger
 

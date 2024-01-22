@@ -32,6 +32,7 @@ public class CursoRepository {
 
         Connection conn = this.sqlManager.getConnection();
         try (PreparedStatement pstmt = conn.prepareStatement(query); ) {
+
             conn.setAutoCommit(false);
 
             pstmt.setString(1, body.nome);
@@ -65,8 +66,8 @@ public class CursoRepository {
 
         try (Connection conn = this.sqlManager.getConnection();
                 PreparedStatement pstmt = conn.prepareStatement(query); ) {
-            ResultSet result = pstmt.executeQuery();
 
+            ResultSet result = pstmt.executeQuery();
             this.log.debug(pstmt.toString());
 
             while (result.next()) {
@@ -100,6 +101,7 @@ public class CursoRepository {
         try (PreparedStatement pstmtCurso = conn.prepareStatement(queryCurso);
                 PreparedStatement pstmtTurma = conn.prepareStatement(queryTurma);
                 PreparedStatement pstmtParticipante = conn.prepareStatement(queryParticipante); ) {
+
             conn.setAutoCommit(false);
 
             pstmtParticipante.setInt(1, cursoId);
@@ -131,6 +133,7 @@ public class CursoRepository {
 
         Connection conn = this.sqlManager.getConnection();
         try (PreparedStatement pstmt = conn.prepareStatement(query); ) {
+
             conn.setAutoCommit(false);
 
             pstmt.setString(1, body.nome);
@@ -157,6 +160,7 @@ public class CursoRepository {
 
         Connection conn = this.sqlManager.getConnection();
         try (PreparedStatement pstmt = conn.prepareStatement(query); ) {
+
             conn.setAutoCommit(false);
 
             pstmt.setBoolean(1, ativo);
@@ -181,6 +185,7 @@ public class CursoRepository {
 
         try (Connection conn = this.sqlManager.getConnection();
                 PreparedStatement pstmt = conn.prepareStatement(query); ) {
+
             pstmt.setInt(1, cursoId);
             ResultSet result = pstmt.executeQuery();
             this.log.debug(pstmt.toString());

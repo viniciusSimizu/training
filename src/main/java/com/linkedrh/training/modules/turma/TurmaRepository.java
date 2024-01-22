@@ -35,6 +35,7 @@ public class TurmaRepository {
 
         Connection conn = this.sqlManager.getConnection();
         try (PreparedStatement pstmt = conn.prepareStatement(query); ) {
+
             conn.setAutoCommit(false);
 
             pstmt.setDate(1, Date.valueOf(body.inicio));
@@ -69,8 +70,8 @@ public class TurmaRepository {
 
         try (Connection conn = this.sqlManager.getConnection();
                 PreparedStatement pstmt = conn.prepareStatement(query); ) {
-            pstmt.setInt(1, cursoId);
 
+            pstmt.setInt(1, cursoId);
             ResultSet result = pstmt.executeQuery();
             this.log.debug(pstmt.toString());
 
@@ -101,6 +102,7 @@ public class TurmaRepository {
 
         try (Connection conn = this.sqlManager.getConnection();
                 PreparedStatement pstmt = conn.prepareStatement(query); ) {
+
             pstmt.setInt(1, cursoId);
             pstmt.setDate(2, Date.valueOf(inicio));
             pstmt.setDate(3, Date.valueOf(fim));
@@ -134,9 +136,9 @@ public class TurmaRepository {
 
         try (Connection conn = this.sqlManager.getConnection();
                 PreparedStatement pstmt = conn.prepareStatement(query); ) {
+
             pstmt.setInt(1, cursoId);
             pstmt.setInt(2, funcionarioId);
-
             ResultSet result = pstmt.executeQuery();
             this.log.debug(pstmt.toString());
 
@@ -161,6 +163,7 @@ public class TurmaRepository {
 
         Connection conn = this.sqlManager.getConnection();
         try (PreparedStatement pstmt = conn.prepareStatement(query); ) {
+
             conn.setAutoCommit(false);
 
             pstmt.setDate(1, Date.valueOf(body.inicio));
@@ -188,6 +191,7 @@ public class TurmaRepository {
         Connection conn = this.sqlManager.getConnection();
         try (PreparedStatement pstmtParticipante = conn.prepareStatement(queryParticipante);
                 PreparedStatement pstmtTurma = conn.prepareStatement(queryTurma); ) {
+
             conn.setAutoCommit(false);
 
             pstmtParticipante.setInt(1, turmaId);

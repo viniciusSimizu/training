@@ -2,6 +2,7 @@ package com.linkedrh.training.modules.funcionario;
 
 import com.linkedrh.training.lib.enums.ErrorEnum;
 import com.linkedrh.training.lib.helpers.ErrorHelper;
+import com.linkedrh.training.lib.helpers.VerifyAuthorization;
 import com.linkedrh.training.lib.log.LogMessageHandler;
 import com.linkedrh.training.modules.funcionario.dtos.request.CreateFuncionarioBodyDTO;
 import com.linkedrh.training.modules.funcionario.dtos.request.UpdateFuncionarioBodyDTO;
@@ -12,6 +13,7 @@ import com.linkedrh.training.modules.funcionario.services.FuncionarioService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -39,10 +42,17 @@ public class FuncionarioController {
     @PostMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> create(@RequestBody CreateFuncionarioBodyDTO body) {
+    public ResponseEntity<Object> create(
+            @RequestHeader(name = HttpHeaders.AUTHORIZATION) String token,
+            @RequestBody CreateFuncionarioBodyDTO body) {
 
         final String service = "criação de funcionário";
         LogMessageHandler.infoEndpointRegistry(service, this.log);
+
+        if (!VerifyAuthorization.verifyToken(token)) {
+            Object response = ErrorHelper.createMessage(ErrorEnum.AUTHORIZATION, null);
+            return new ResponseEntity<Object>(response, HttpStatus.FORBIDDEN);
+        }
 
         if (!body.isValid()) {
             Object response = ErrorHelper.createMessage(ErrorEnum.VALIDATION, body.getErrors());
@@ -65,10 +75,16 @@ public class FuncionarioController {
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> list(
+            @RequestHeader(name = HttpHeaders.AUTHORIZATION) String token,
             @RequestParam(name = "ativo", required = false) Boolean ativo) {
 
         final String service = "listagem de funcionario por status";
         LogMessageHandler.infoEndpointRegistry(service, this.log);
+
+        if (!VerifyAuthorization.verifyToken(token)) {
+            Object response = ErrorHelper.createMessage(ErrorEnum.AUTHORIZATION, null);
+            return new ResponseEntity<Object>(response, HttpStatus.FORBIDDEN);
+        }
 
         List<FuncionarioResponseList> funcionarios;
 
@@ -84,10 +100,17 @@ public class FuncionarioController {
     }
 
     @GetMapping(path = "/turma/{turmaId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> listByTurma(@PathVariable int turmaId) {
+    public ResponseEntity<Object> listByTurma(
+            @RequestHeader(name = HttpHeaders.AUTHORIZATION) String token,
+            @PathVariable int turmaId) {
 
         final String service = "listagem de funcionario por turma";
         LogMessageHandler.infoEndpointRegistry(service, this.log);
+
+        if (!VerifyAuthorization.verifyToken(token)) {
+            Object response = ErrorHelper.createMessage(ErrorEnum.AUTHORIZATION, null);
+            return new ResponseEntity<Object>(response, HttpStatus.FORBIDDEN);
+        }
 
         List<FuncionarioResponseListByTurmaFuncionario> funcionarios;
 
@@ -107,10 +130,17 @@ public class FuncionarioController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> update(
-            @PathVariable int funcionarioId, @RequestBody UpdateFuncionarioBodyDTO body) {
+            @RequestHeader(name = HttpHeaders.AUTHORIZATION) String token,
+            @PathVariable int funcionarioId,
+            @RequestBody UpdateFuncionarioBodyDTO body) {
 
         final String service = "atualizar funcionario";
         LogMessageHandler.infoEndpointRegistry(service, this.log);
+
+        if (!VerifyAuthorization.verifyToken(token)) {
+            Object response = ErrorHelper.createMessage(ErrorEnum.AUTHORIZATION, null);
+            return new ResponseEntity<Object>(response, HttpStatus.FORBIDDEN);
+        }
 
         if (!body.isValid()) {
             Object response = ErrorHelper.createMessage(ErrorEnum.VALIDATION, body.getErrors());
@@ -132,10 +162,17 @@ public class FuncionarioController {
             path = "/{funcionarioId}/ativo/{ativo}",
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> updateAtivoField(
-            @PathVariable int funcionarioId, @PathVariable boolean ativo) {
+            @RequestHeader(name = HttpHeaders.AUTHORIZATION) String token,
+            @PathVariable int funcionarioId,
+            @PathVariable boolean ativo) {
 
         final String service = "atualizar status do funcionario";
         LogMessageHandler.infoEndpointRegistry(service, this.log);
+
+        if (!VerifyAuthorization.verifyToken(token)) {
+            Object response = ErrorHelper.createMessage(ErrorEnum.AUTHORIZATION, null);
+            return new ResponseEntity<Object>(response, HttpStatus.FORBIDDEN);
+        }
 
         try {
             this.service.updateAtivoField(funcionarioId, ativo);

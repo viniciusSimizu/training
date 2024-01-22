@@ -16,6 +16,8 @@ public class ErrorHelper {
                 break;
             case VALIDATION:
                 response.put("validation", message);
+            case AUTHORIZATION:
+                response.put("authorization", "without authorization to access endpoint");
             default:
                 response.put("error", "Something went wrong");
                 break;

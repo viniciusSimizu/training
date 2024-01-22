@@ -33,6 +33,7 @@ public class FuncionarioRepository {
 
         Connection conn = this.sqlManager.getConnection();
         try (PreparedStatement pstmt = conn.prepareStatement(query); ) {
+
             conn.setAutoCommit(false);
 
             pstmt.setString(1, body.nome);
@@ -74,6 +75,7 @@ public class FuncionarioRepository {
 
         try (Connection conn = this.sqlManager.getConnection();
                 PreparedStatement pstmt = conn.prepareStatement(query.toString()); ) {
+
             ResultSet result = pstmt.executeQuery();
             this.log.debug(pstmt.toString());
 
@@ -106,8 +108,8 @@ public class FuncionarioRepository {
 
         try (Connection conn = this.sqlManager.getConnection();
                 PreparedStatement pstmt = conn.prepareStatement(query); ) {
-            pstmt.setInt(1, turmaId);
 
+            pstmt.setInt(1, turmaId);
             ResultSet result = pstmt.executeQuery();
             this.log.debug(pstmt.toString());
 
@@ -138,6 +140,7 @@ public class FuncionarioRepository {
 
         Connection conn = this.sqlManager.getConnection();
         try (PreparedStatement pstmt = conn.prepareStatement(query); ) {
+
             conn.setAutoCommit(false);
 
             pstmt.setString(1, body.nome);
@@ -166,6 +169,7 @@ public class FuncionarioRepository {
 
         Connection conn = this.sqlManager.getConnection();
         try (PreparedStatement pstmt = conn.prepareStatement(query); ) {
+
             conn.setAutoCommit(false);
 
             pstmt.setBoolean(1, ativo);

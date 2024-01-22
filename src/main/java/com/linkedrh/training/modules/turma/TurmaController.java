@@ -2,6 +2,7 @@ package com.linkedrh.training.modules.turma;
 
 import com.linkedrh.training.lib.enums.ErrorEnum;
 import com.linkedrh.training.lib.helpers.ErrorHelper;
+import com.linkedrh.training.lib.helpers.VerifyAuthorization;
 import com.linkedrh.training.lib.log.LogMessageHandler;
 import com.linkedrh.training.modules.turma.dtos.request.CreateTurmaBodyDTO;
 import com.linkedrh.training.modules.turma.dtos.request.UpdateTurmaBodyDTO;
@@ -12,6 +13,7 @@ import com.linkedrh.training.modules.turma.services.TurmaService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -39,10 +42,17 @@ public class TurmaController {
     @PostMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> create(@RequestBody CreateTurmaBodyDTO body) {
+    public ResponseEntity<Object> create(
+            @RequestHeader(name = HttpHeaders.AUTHORIZATION) String token,
+            @RequestBody CreateTurmaBodyDTO body) {
 
         final String service = "criação de turma";
         LogMessageHandler.infoEndpointRegistry(service, this.log);
+
+        if (!VerifyAuthorization.verifyToken(token)) {
+            Object response = ErrorHelper.createMessage(ErrorEnum.AUTHORIZATION, null);
+            return new ResponseEntity<Object>(response, HttpStatus.FORBIDDEN);
+        }
 
         if (!body.isValid()) {
             Object response = ErrorHelper.createMessage(ErrorEnum.VALIDATION, body.getErrors());
@@ -64,10 +74,17 @@ public class TurmaController {
     }
 
     @GetMapping(path = "/curso/{cursoId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> listByCurso(@PathVariable int cursoId) {
+    public ResponseEntity<Object> listByCurso(
+            @RequestHeader(name = HttpHeaders.AUTHORIZATION) String token,
+            @PathVariable int cursoId) {
 
         final String service = "listagem de turmas por curso";
         LogMessageHandler.infoEndpointRegistry(service, this.log);
+
+        if (!VerifyAuthorization.verifyToken(token)) {
+            Object response = ErrorHelper.createMessage(ErrorEnum.AUTHORIZATION, null);
+            return new ResponseEntity<Object>(response, HttpStatus.FORBIDDEN);
+        }
 
         List<TurmaResponseForListByCursoTurmaDTO> turmas;
 
@@ -86,10 +103,17 @@ public class TurmaController {
             path = "/curso/{cursoId}/funcionario/{funcionarioId}",
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> findByCursoAndFuncionario(
-            @PathVariable int cursoId, @PathVariable int funcionarioId) {
+            @RequestHeader(name = HttpHeaders.AUTHORIZATION) String token,
+            @PathVariable int cursoId,
+            @PathVariable int funcionarioId) {
 
         final String service = "buscar turma por curso e funcionário";
         LogMessageHandler.infoEndpointRegistry(service, this.log);
+
+        if (!VerifyAuthorization.verifyToken(token)) {
+            Object response = ErrorHelper.createMessage(ErrorEnum.AUTHORIZATION, null);
+            return new ResponseEntity<Object>(response, HttpStatus.FORBIDDEN);
+        }
 
         TurmaResponseForFindByCursoAndFuncionarioDTO turma;
 
@@ -109,10 +133,17 @@ public class TurmaController {
 
     @PutMapping(path = "/{turmaId}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> create(
-            @PathVariable int turmaId, @RequestBody UpdateTurmaBodyDTO body) {
+            @RequestHeader(name = HttpHeaders.AUTHORIZATION) String token,
+            @PathVariable int turmaId,
+            @RequestBody UpdateTurmaBodyDTO body) {
 
         final String service = "atualização da turma";
         LogMessageHandler.infoEndpointRegistry(service, this.log);
+
+        if (!VerifyAuthorization.verifyToken(token)) {
+            Object response = ErrorHelper.createMessage(ErrorEnum.AUTHORIZATION, null);
+            return new ResponseEntity<Object>(response, HttpStatus.FORBIDDEN);
+        }
 
         if (!body.isValid()) {
             Object response = ErrorHelper.createMessage(ErrorEnum.VALIDATION, body.getErrors());
@@ -131,10 +162,17 @@ public class TurmaController {
     }
 
     @DeleteMapping(path = "/{turmaId}")
-    public ResponseEntity<Object> create(@PathVariable int turmaId) {
+    public ResponseEntity<Object> create(
+            @RequestHeader(name = HttpHeaders.AUTHORIZATION) String token,
+            @PathVariable int turmaId) {
 
         final String service = "deletar turma";
         LogMessageHandler.infoEndpointRegistry(service, this.log);
+
+        if (!VerifyAuthorization.verifyToken(token)) {
+            Object response = ErrorHelper.createMessage(ErrorEnum.AUTHORIZATION, null);
+            return new ResponseEntity<Object>(response, HttpStatus.FORBIDDEN);
+        }
 
         try {
             this.service.delete(turmaId);

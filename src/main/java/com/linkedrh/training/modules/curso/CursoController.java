@@ -2,6 +2,7 @@ package com.linkedrh.training.modules.curso;
 
 import com.linkedrh.training.lib.enums.ErrorEnum;
 import com.linkedrh.training.lib.helpers.ErrorHelper;
+import com.linkedrh.training.lib.helpers.VerifyAuthorization;
 import com.linkedrh.training.lib.log.LogMessageHandler;
 import com.linkedrh.training.modules.curso.dtos.request.CreateCursoBodyDTO;
 import com.linkedrh.training.modules.curso.dtos.request.UpdateCursoBodyDTO;
@@ -13,6 +14,7 @@ import com.linkedrh.training.modules.curso.services.CursoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -43,10 +46,17 @@ public class CursoController {
     @PostMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> create(@RequestBody CreateCursoBodyDTO body) {
+    public ResponseEntity<Object> create(
+            @RequestHeader(name = HttpHeaders.AUTHORIZATION) String token,
+            @RequestBody CreateCursoBodyDTO body) {
 
         final String service = "criação de curso";
         LogMessageHandler.infoEndpointRegistry(service, this.log);
+
+        if (!VerifyAuthorization.verifyToken(token)) {
+            Object response = ErrorHelper.createMessage(ErrorEnum.AUTHORIZATION, null);
+            return new ResponseEntity<Object>(response, HttpStatus.FORBIDDEN);
+        }
 
         if (!body.isValid()) {
             Object response = ErrorHelper.createMessage(ErrorEnum.VALIDATION, body.getErrors());
@@ -68,9 +78,16 @@ public class CursoController {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> list() {
+    public ResponseEntity<Object> list(
+            @RequestHeader(name = HttpHeaders.AUTHORIZATION) String token) {
+
         final String service = "listagem de cursos";
         LogMessageHandler.infoEndpointRegistry(service, this.log);
+
+        if (!VerifyAuthorization.verifyToken(token)) {
+            Object response = ErrorHelper.createMessage(ErrorEnum.AUTHORIZATION, null);
+            return new ResponseEntity<Object>(response, HttpStatus.FORBIDDEN);
+        }
 
         List<CursoResponseForListCursoDTO> cursos;
 
@@ -87,10 +104,17 @@ public class CursoController {
 
     @GetMapping(path = "date/range/{inicio}/{fim}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> listBetweenDates(
-            @PathVariable LocalDate inicio, @PathVariable LocalDate fim) {
+            @RequestHeader(name = HttpHeaders.AUTHORIZATION) String token,
+            @PathVariable LocalDate inicio,
+            @PathVariable LocalDate fim) {
 
         final String service = "listagem de cursos entre datas";
         LogMessageHandler.infoEndpointRegistry(service, this.log);
+
+        if (!VerifyAuthorization.verifyToken(token)) {
+            Object response = ErrorHelper.createMessage(ErrorEnum.AUTHORIZATION, null);
+            return new ResponseEntity<Object>(response, HttpStatus.FORBIDDEN);
+        }
 
         List<CursoResponseForBetweenDatesCursoDTO> cursos;
 
@@ -110,9 +134,17 @@ public class CursoController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> update(
-            @PathVariable int cursoId, @RequestBody UpdateCursoBodyDTO body) {
+            @RequestHeader(name = HttpHeaders.AUTHORIZATION) String token,
+            @PathVariable int cursoId,
+            @RequestBody UpdateCursoBodyDTO body) {
+
         final String service = "atualizar curso";
         LogMessageHandler.infoEndpointRegistry(service, this.log);
+
+        if (!VerifyAuthorization.verifyToken(token)) {
+            Object response = ErrorHelper.createMessage(ErrorEnum.AUTHORIZATION, null);
+            return new ResponseEntity<Object>(response, HttpStatus.FORBIDDEN);
+        }
 
         if (!body.isValid()) {
             Object response = ErrorHelper.createMessage(ErrorEnum.VALIDATION, body.getErrors());
@@ -132,10 +164,17 @@ public class CursoController {
 
     @DeleteMapping(path = "/{cursoId}")
     public ResponseEntity<Object> delete(
+            @RequestHeader(name = HttpHeaders.AUTHORIZATION) String token,
             @PathVariable int cursoId,
             @RequestParam(name = "force", required = false, defaultValue = "false") Boolean force) {
+
         final String service = "deleção de curso";
         LogMessageHandler.infoEndpointRegistry(service, this.log);
+
+        if (!VerifyAuthorization.verifyToken(token)) {
+            Object response = ErrorHelper.createMessage(ErrorEnum.AUTHORIZATION, null);
+            return new ResponseEntity<Object>(response, HttpStatus.FORBIDDEN);
+        }
 
         try {
             this.service.delete(cursoId, force);

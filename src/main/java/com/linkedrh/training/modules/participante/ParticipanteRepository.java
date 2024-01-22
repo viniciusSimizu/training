@@ -28,6 +28,7 @@ public class ParticipanteRepository {
 
         Connection conn = this.sqlManager.getConnection();
         try (PreparedStatement pstmt = conn.prepareStatement(query); ) {
+
             conn.setAutoCommit(false);
 
             pstmt.setInt(1, body.funcionarioId);
@@ -58,6 +59,7 @@ public class ParticipanteRepository {
 
         Connection conn = this.sqlManager.getConnection();
         try (PreparedStatement pstmt = conn.prepareStatement(query); ) {
+
             conn.setAutoCommit(false);
 
             pstmt.setInt(1, turmaId);
@@ -82,6 +84,7 @@ public class ParticipanteRepository {
 
         Connection conn = this.sqlManager.getConnection();
         try (PreparedStatement pstmt = conn.prepareStatement(query); ) {
+
             conn.setAutoCommit(false);
 
             pstmt.setInt(1, funcionarioId);

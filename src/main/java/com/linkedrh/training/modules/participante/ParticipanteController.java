@@ -2,6 +2,7 @@ package com.linkedrh.training.modules.participante;
 
 import com.linkedrh.training.lib.enums.ErrorEnum;
 import com.linkedrh.training.lib.helpers.ErrorHelper;
+import com.linkedrh.training.lib.helpers.VerifyAuthorization;
 import com.linkedrh.training.lib.log.LogMessageHandler;
 import com.linkedrh.training.modules.participante.dtos.request.CreateParticipanteBodyDTO;
 import com.linkedrh.training.modules.participante.services.ParticipanteService;
@@ -9,6 +10,7 @@ import com.linkedrh.training.modules.participante.services.ParticipanteService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -33,10 +36,17 @@ public class ParticipanteController {
     @PostMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> create(@RequestBody CreateParticipanteBodyDTO body) {
+    public ResponseEntity<Object> create(
+            @RequestHeader(name = HttpHeaders.AUTHORIZATION) String token,
+            @RequestBody CreateParticipanteBodyDTO body) {
 
         final String service = "criação de participante";
         LogMessageHandler.infoEndpointRegistry(service, this.log);
+
+        if (!VerifyAuthorization.verifyToken(token)) {
+            Object response = ErrorHelper.createMessage(ErrorEnum.AUTHORIZATION, null);
+            return new ResponseEntity<Object>(response, HttpStatus.FORBIDDEN);
+        }
 
         if (!body.isValid()) {
             Object response = ErrorHelper.createMessage(ErrorEnum.VALIDATION, body.getErrors());
@@ -59,10 +69,17 @@ public class ParticipanteController {
 
     @DeleteMapping(path = "/turma/{turmaId}/funcionario/{funcionarioId}")
     public ResponseEntity<Object> delete(
-            @PathVariable int turmaId, @PathVariable int funcionarioId) {
+            @RequestHeader(name = HttpHeaders.AUTHORIZATION) String token,
+            @PathVariable int turmaId,
+            @PathVariable int funcionarioId) {
 
         final String service = "deletar participante";
         LogMessageHandler.infoEndpointRegistry(service, this.log);
+
+        if (!VerifyAuthorization.verifyToken(token)) {
+            Object response = ErrorHelper.createMessage(ErrorEnum.AUTHORIZATION, null);
+            return new ResponseEntity<Object>(response, HttpStatus.FORBIDDEN);
+        }
 
         try {
             this.service.delete(turmaId, funcionarioId);
@@ -76,10 +93,17 @@ public class ParticipanteController {
     }
 
     @DeleteMapping(path = "/funcionario/{funcionarioId}")
-    public ResponseEntity<Object> delete(@PathVariable int funcionarioId) {
+    public ResponseEntity<Object> delete(
+            @RequestHeader(name = HttpHeaders.AUTHORIZATION) String token,
+            @PathVariable int funcionarioId) {
 
         final String service = "deletar participantes por funcionário";
         LogMessageHandler.infoEndpointRegistry(service, this.log);
+
+        if (!VerifyAuthorization.verifyToken(token)) {
+            Object response = ErrorHelper.createMessage(ErrorEnum.AUTHORIZATION, null);
+            return new ResponseEntity<Object>(response, HttpStatus.FORBIDDEN);
+        }
 
         try {
             this.service.deleteByFuncionario(funcionarioId);
