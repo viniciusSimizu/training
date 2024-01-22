@@ -7,6 +7,7 @@ import com.linkedrh.training.modules.turma.dtos.request.CreateTurmaBodyDTO;
 import com.linkedrh.training.modules.turma.dtos.request.UpdateTurmaBodyDTO;
 import com.linkedrh.training.modules.turma.dtos.response.TurmaResponseForFindByCursoAndFuncionarioDTO;
 import com.linkedrh.training.modules.turma.dtos.response.TurmaResponseForListByCursoTurmaDTO;
+import com.linkedrh.training.modules.turma.services.TurmaService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

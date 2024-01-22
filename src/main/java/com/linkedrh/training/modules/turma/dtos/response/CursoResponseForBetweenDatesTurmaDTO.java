@@ -24,4 +24,26 @@ public class CursoResponseForBetweenDatesTurmaDTO {
         }
         this.local = entity.local;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null || this.getClass() != obj.getClass()) {
+            return false;
+        }
+
+        CursoResponseForBetweenDatesTurmaDTO that = (CursoResponseForBetweenDatesTurmaDTO) obj;
+
+        if (this.codigo != that.codigo) return false;
+        if (this.quantidadeParticipantes != that.quantidadeParticipantes) return false;
+        if (!this.inicio.isEqual(that.inicio)) return false;
+        if (!this.fim.isEqual(that.fim)) return false;
+        if (!this.local.equals(that.local)) return false;
+
+        if (this.funcionarios.size() != that.funcionarios.size()) return false;
+        for (int i = 0; i < this.funcionarios.size(); i++) {
+            if (!this.funcionarios.get(i).equals(that.funcionarios.get(i))) return false;
+        }
+
+        return true;
+    }
 }

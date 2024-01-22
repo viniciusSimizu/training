@@ -1,5 +1,6 @@
-package com.linkedrh.training.modules.participante;
+package com.linkedrh.training.modules.participante.services;
 
+import com.linkedrh.training.modules.participante.ParticipanteRepository;
 import com.linkedrh.training.modules.participante.dtos.request.CreateParticipanteBodyDTO;
 
 import org.springframework.beans.factory.annotation.Autowired;

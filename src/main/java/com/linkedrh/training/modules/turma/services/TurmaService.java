@@ -1,5 +1,6 @@
-package com.linkedrh.training.modules.turma;
+package com.linkedrh.training.modules.turma.services;
 
+import com.linkedrh.training.modules.turma.TurmaRepository;
 import com.linkedrh.training.modules.turma.dtos.request.CreateTurmaBodyDTO;
 import com.linkedrh.training.modules.turma.dtos.request.UpdateTurmaBodyDTO;
 import com.linkedrh.training.modules.turma.dtos.response.TurmaResponseForFindByCursoAndFuncionarioDTO;
@@ -23,7 +24,9 @@ public class TurmaService {
 
     public List<TurmaResponseForListByCursoTurmaDTO> listByCurso(int cursoId) throws Exception {
         List<Turma> turmas = this.cursoRepository.listByCurso(cursoId);
-        return turmas.stream().map(TurmaResponseForListByCursoTurmaDTO::new).collect(Collectors.toList());
+        return turmas.stream()
+                .map(TurmaResponseForListByCursoTurmaDTO::new)
+                .collect(Collectors.toList());
     }
 
     public TurmaResponseForFindByCursoAndFuncionarioDTO findByCursoAndFuncionario(

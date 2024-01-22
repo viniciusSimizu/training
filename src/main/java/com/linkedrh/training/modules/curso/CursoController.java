@@ -7,6 +7,8 @@ import com.linkedrh.training.modules.curso.dtos.request.CreateCursoBodyDTO;
 import com.linkedrh.training.modules.curso.dtos.request.UpdateCursoBodyDTO;
 import com.linkedrh.training.modules.curso.dtos.response.CursoResponseForBetweenDatesCursoDTO;
 import com.linkedrh.training.modules.curso.dtos.response.CursoResponseForListCursoDTO;
+import com.linkedrh.training.modules.curso.services.CursoListBetweenDatesService;
+import com.linkedrh.training.modules.curso.services.CursoService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,6 +38,7 @@ public class CursoController {
     final Logger log = LoggerFactory.getLogger(CursoController.class);
 
     @Autowired private CursoService service;
+    @Autowired private CursoListBetweenDatesService listBetweenDatesService;
 
     @PostMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -92,7 +95,7 @@ public class CursoController {
         List<CursoResponseForBetweenDatesCursoDTO> cursos;
 
         try {
-            cursos = this.service.listBetweenDates(inicio, fim);
+            cursos = this.listBetweenDatesService.list(inicio, fim);
 
         } catch (Exception e) {
             Object response = ErrorHelper.createMessage(ErrorEnum.EXCEPTION, e.getMessage());

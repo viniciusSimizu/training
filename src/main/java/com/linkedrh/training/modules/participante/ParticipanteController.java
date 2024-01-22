@@ -4,6 +4,7 @@ import com.linkedrh.training.lib.enums.ErrorEnum;
 import com.linkedrh.training.lib.helpers.ErrorHelper;
 import com.linkedrh.training.lib.log.LogMessageHandler;
 import com.linkedrh.training.modules.participante.dtos.request.CreateParticipanteBodyDTO;
+import com.linkedrh.training.modules.participante.services.ParticipanteService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

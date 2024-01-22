@@ -6,6 +6,7 @@ import com.linkedrh.training.lib.log.LogMessageHandler;
 import com.linkedrh.training.modules.funcionario.dtos.request.CreateFuncionarioBodyDTO;
 import com.linkedrh.training.modules.funcionario.dtos.request.UpdateFuncionarioBodyDTO;
 import com.linkedrh.training.modules.funcionario.dtos.response.FuncionarioResponseListByTurmaFuncionario;
+import com.linkedrh.training.modules.funcionario.services.FuncionarioService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
