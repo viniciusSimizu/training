@@ -1,0 +1,158 @@
+paths:
+  /turma:
+    post:
+      summary: Criar Turma
+      tags:
+        - turma
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateTurmaBody"
+      responses:
+        "201":
+          description: Criado com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  codigo:
+                    $ref: "../components.yml#/components/schemas/Codigo"
+        "400":
+          $ref: "../components.yml#/components/responses/400"
+        "500":
+          $ref: "../components.yml#/components/responses/500"
+
+  /turma/{turmaId}:
+    put:
+      summary: Atualizar Turma
+      tags:
+        - turma
+      parameters:
+        - $ref: "../components.yml#/components/parameters/turmaIdPath"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateTurmaBody"
+      responses:
+        "200":
+          description: Atualizado com sucesso
+        "400":
+          $ref: "../components.yml#/components/responses/400"
+        "500":
+          $ref: "../components.yml#/components/responses/500"
+
+    delete:
+      summary: Deletar Turma
+      tags:
+        - turma
+      parameters:
+        - $ref: "../components.yml#/components/parameters/turmaIdPath"
+      responses:
+        "200":
+          description: Deletado com sucesso
+        "400":
+          $ref: "../components.yml#/components/responses/400"
+        "500":
+          $ref: "../components.yml#/components/responses/500"
+
+  /turma/curso/{cursoId}:
+    get:
+      summary: Retorna uma lista de Turmas pelo ID do Curso.
+      tags:
+        - turma
+      parameters:
+        - $ref: "../components.yml#/components/parameters/cursoIdPath"
+      responses:
+        "200":
+          description: Lista de Turmas
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/TurmaResponseForListByCursoTurma"
+        "500":
+          $ref: "../components.yml#/components/responses/500"
+
+  /turma/curso/{cursoId}/funcionario/{funcionarioId}:
+    get:
+      summary: Encontra a Turma com base no Curso e Funcionario informados.
+      tags:
+        - turma
+      parameters:
+        - $ref: "../components.yml#/components/parameters/cursoIdPath"
+        - $ref: "../components.yml#/components/parameters/funcionarioIdPath"
+      responses:
+        "200":
+          description: Turma encontrada ou null
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TurmaResponseForFindByCursoAndFuncionario"
+        "500":
+          $ref: "../components.yml#/components/responses/500"
+
+components:
+  schemas:
+    CreateTurmaBody:
+      required: true
+      type: object
+      properties:
+        inicio:
+          type: string
+          format: date
+        fim:
+          type: string
+          format: date
+        local:
+          type: string
+        cursoId:
+          $ref: "../components.yml#/components/schemas/Codigo"
+
+    UpdateTurmaBody:
+      required: true
+      type: object
+      properties:
+        inicio:
+          type: string
+          format: date
+        fim:
+          type: string
+          format: date
+        local:
+          type: string
+
+    TurmaResponseForListByCursoTurma:
+      type: object
+      properties:
+        codigo:
+          $ref: "../components.yml#/components/schemas/Codigo"
+        quantidadeParticipantes:
+          $ref: "../components.yml#/components/schemas/PositiveInteger"
+        inicio:
+          type: string
+          format: date
+        fim:
+          type: string
+          format: date
+        local:
+          type: string
+
+    TurmaResponseForFindByCursoAndFuncionario:
+      type: object
+      properties:
+        codigo:
+          $ref: "../components.yml#/components/schemas/Codigo"
+        inicio:
+          type: string
+          format: date
+        fim:
+          type: string
+          format: date
+        local:
+          type: string

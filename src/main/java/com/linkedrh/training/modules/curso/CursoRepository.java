@@ -1,5 +1,6 @@
 package com.linkedrh.training.modules.curso;
 
+import com.linkedrh.training.lib.helpers.QueryFinder;
 import com.linkedrh.training.lib.interfaces.IDatabaseManager;
 import com.linkedrh.training.modules.curso.dtos.request.CreateCursoBodyDTO;
 import com.linkedrh.training.modules.curso.dtos.request.UpdateCursoBodyDTO;
@@ -20,18 +21,14 @@ import java.util.List;
 @Repository
 public class CursoRepository {
 
-    final Logger log = LoggerFactory.getLogger(CursoRepository.class);
+    private final String module = "curso";
+    private final Logger log = LoggerFactory.getLogger(CursoRepository.class);
 
     @Autowired private IDatabaseManager sqlManager;
+    @Autowired private QueryFinder qf;
 
     public int create(CreateCursoBodyDTO body) throws Exception {
-        final String query =
-                """
-				INSERT INTO curso
-				(nome, descricao, duracao)
-				VALUES (?, ?, ?)
-				RETURNING codigo
-				""";
+        final String query = qf.findQuery(module, "create");
 
         try (Connection conn = this.sqlManager.getConnection();
                 PreparedStatement pstmt = conn.prepareStatement(query); ) {
@@ -55,18 +52,7 @@ public class CursoRepository {
     }
 
     public List<Curso> list() throws Exception {
-        final String query =
-                """
-				SELECT
-					curso.nome AS nome,
-					curso.duracao AS duracao,
-					curso.ativo AS ativo,
-					COUNT(turma.codigo) AS quantidadeTurmas,
-					MIN(turma.inicio) FILTER(WHERE turma.inicio >= NOW()) AS dataInicioMaisProxima
-				FROM curso
-				LEFT JOIN turma ON turma.curso_id = curso.codigo
-				GROUP BY curso.codigo
-				""";
+        final String query = this.qf.findQuery(module, "list");
 
         List<Curso> cursos = new ArrayList<>();
 
@@ -98,22 +84,9 @@ public class CursoRepository {
     }
 
     public void delete(int cursoId) throws Exception {
-        final String queryCurso = """
-					DELETE FROM curso
-					WHERE codigo = ?
-				""";
-        final String queryTurma = """
-					DELETE FROM turma
-					WHERE curso_id = ?
-					""";
-        final String queryParticipante =
-                """
-								DELETE FROM turma_participante AS participante
-								USING turma
-								WHERE
-									participante.turma_id = turma.codigo
-									AND turma.curso_id = ?
-					""";
+        final String queryCurso = this.qf.findQuery(module, "delete_curso");
+        final String queryTurma = this.qf.findQuery(module, "delete_turma");
+        final String queryParticipante = this.qf.findQuery(module, "delete_participante");
 
         try (Connection conn = this.sqlManager.getConnection();
                 PreparedStatement pstmtCurso = conn.prepareStatement(queryCurso);
@@ -142,14 +115,7 @@ public class CursoRepository {
     }
 
     public void update(int cursoId, UpdateCursoBodyDTO body) throws Exception {
-        final String query =
-                """
-				UPDATE curso
-				SET nome = ?,
-				descricao = ?,
-				duracao = ?
-				WHERE codigo = ?
-				""";
+        final String query = this.qf.findQuery(module, "update");
 
         try (Connection conn = this.sqlManager.getConnection();
                 PreparedStatement pstmt = conn.prepareStatement(query); ) {
@@ -167,11 +133,7 @@ public class CursoRepository {
     }
 
     public void updateAtivoField(int cursoId, boolean ativo) throws Exception {
-        final String query = """
-				UPDATE curso
-				SET ativo = ?
-				WHERE codigo = ?
-				""";
+        final String query = this.qf.findQuery(module, "update_ativo");
 
         try (Connection conn = this.sqlManager.getConnection();
                 PreparedStatement pstmt = conn.prepareStatement(query); ) {
@@ -187,14 +149,7 @@ public class CursoRepository {
     }
 
     public boolean hasTurmas(int cursoId) throws Exception {
-        final String query =
-                """
-					SELECT 1
-					FROM curso
-					INNER JOIN turma ON turma.curso_id = curso.codigo
-					WHERE curso.codigo = ?
-					LIMIT 1
-				""";
+        final String query = this.qf.findQuery(module, "has_turmas");
 
         try (Connection conn = this.sqlManager.getConnection();
                 PreparedStatement pstmt = conn.prepareStatement(query); ) {

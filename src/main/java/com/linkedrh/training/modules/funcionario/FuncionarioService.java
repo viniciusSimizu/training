@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class FuncionarioService {
@@ -22,7 +23,7 @@ public class FuncionarioService {
     public List<FuncionarioResponseListByTurmaFuncionario> listByTurma(int turmaId)
             throws Exception {
         List<Funcionario> funcionarios = this.cursoRepository.listByTurma(turmaId);
-        return funcionarios.stream().map(FuncionarioResponseListByTurmaFuncionario::new).toList();
+        return funcionarios.stream().map(FuncionarioResponseListByTurmaFuncionario::new).collect(Collectors.toList());
     }
 
     public void update(int funcionarioId, UpdateFuncionarioBodyDTO body) throws Exception {

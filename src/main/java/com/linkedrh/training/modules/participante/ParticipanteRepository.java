@@ -1,5 +1,6 @@
 package com.linkedrh.training.modules.participante;
 
+import com.linkedrh.training.lib.helpers.QueryFinder;
 import com.linkedrh.training.lib.interfaces.IDatabaseManager;
 import com.linkedrh.training.modules.participante.dtos.request.CreateParticipanteBodyDTO;
 
@@ -16,18 +17,14 @@ import java.sql.SQLException;
 @Repository
 public class ParticipanteRepository {
 
-    final Logger log = LoggerFactory.getLogger(ParticipanteRepository.class);
+    private final String module = "participante";
+    private final Logger log = LoggerFactory.getLogger(ParticipanteRepository.class);
 
     @Autowired private IDatabaseManager sqlManager;
+		@Autowired private QueryFinder qf;
 
     public int create(CreateParticipanteBodyDTO body) throws Exception {
-        final String query =
-                """
-				INSERT INTO turma_participante
-				(funcionario_id, turma_id)
-				VALUES (?, ?)
-				RETURNING codigo
-				""";
+			final String query = this.qf.findQuery(module, "create");
 
         try (Connection conn = this.sqlManager.getConnection();
                 PreparedStatement pstmt = conn.prepareStatement(query); ) {
@@ -50,12 +47,7 @@ public class ParticipanteRepository {
     }
 
     public void delete(int turmaId, int funcionarioId) throws Exception {
-        final String query =
-                """
-								DELETE FROM turma_participante
-								WHERE turma_id = ?
-								AND funcionario_id = ?
-				""";
+			final String query = this.qf.findQuery(module, "delete");
 
         try (Connection conn = this.sqlManager.getConnection();
                 PreparedStatement pstmt = conn.prepareStatement(query); ) {
@@ -73,14 +65,7 @@ public class ParticipanteRepository {
     }
 
     public void deleteByFuncionario(int funcionarioId) throws Exception {
-        final String query =
-                """
-								DELETE FROM turma_participante AS participante
-								USING turma
-								WHERE participante.funcionario_id = ?
-									AND turma.inicio > NOW()
-									AND participante.turma_id = turma.codigo
-				""";
+			final String query = this.qf.findQuery(module, "delete_by_funcionario");
 
         try (Connection conn = this.sqlManager.getConnection();
                 PreparedStatement pstmt = conn.prepareStatement(query); ) {

@@ -1,5 +1,6 @@
 package com.linkedrh.training.modules.turma;
 
+import com.linkedrh.training.lib.helpers.QueryFinder;
 import com.linkedrh.training.lib.interfaces.IDatabaseManager;
 import com.linkedrh.training.modules.turma.dtos.request.CreateTurmaBodyDTO;
 import com.linkedrh.training.modules.turma.dtos.request.UpdateTurmaBodyDTO;
@@ -10,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -22,18 +24,14 @@ import java.util.List;
 @Repository
 public class TurmaRepository {
 
+    private final String module = "turma";
     final Logger log = LoggerFactory.getLogger(TurmaRepository.class);
 
     @Autowired private IDatabaseManager sqlManager;
+    @Autowired private QueryFinder qf;
 
     public int create(CreateTurmaBodyDTO body) throws Exception {
-        final String query =
-                """
-				INSERT INTO turma
-				(inicio, fim, local, curso_id)
-				VALUES (?, ?, ?, ?)
-				RETURNING codigo
-				""";
+        final String query = this.qf.findQuery(module, "create");
 
         try (Connection conn = this.sqlManager.getConnection();
                 PreparedStatement pstmt = conn.prepareStatement(query); ) {
@@ -57,21 +55,8 @@ public class TurmaRepository {
         }
     }
 
-    public List<Turma> listByCurso(int cursoId) {
-        final String query =
-                """
-				SELECT
-					turma.codigo AS codigo,
-					turma.inicio AS inicio,
-					turma.fim AS fim,
-					turma.local AS local,
-					COUNT(participante.codigo) AS quantidadeParticipantes
-				FROM turma
-				LEFT JOIN turma_participante participante ON participante.turma_id = turma.codigo
-				WHERE curso_id = ?
-				GROUP BY turma.codigo
-				ORDER BY inicio, fim
-				""";
+    public List<Turma> listByCurso(int cursoId) throws IOException {
+        final String query = this.qf.findQuery(module, "list_by_curso");
 
         List<Turma> turmas = new ArrayList<>();
 
@@ -101,22 +86,9 @@ public class TurmaRepository {
         return turmas;
     }
 
-    public List<Turma> listBetweenDateRange(int cursoId, LocalDate inicio, LocalDate fim) {
-        final String query =
-                """
-				SELECT
-					turma.codigo AS codigo,
-					turma.inicio AS inicio,
-					turma.fim AS fim,
-					turma.local AS local,
-					COUNT(participante.codigo) AS quantidadeParticipantes
-				FROM turma
-				LEFT JOIN turma_participante participante ON participante.turma_id = turma.codigo
-				WHERE turma.curso_id = ?
-				AND turma.inicio BETWEEN ? AND ?
-				GROUP BY turma.codigo
-				ORDER BY inicio, fim
-				""";
+    public List<Turma> listBetweenDateRange(int cursoId, LocalDate inicio, LocalDate fim)
+            throws IOException {
+        final String query = this.qf.findQuery(module, "list_between_date_range");
 
         List<Turma> turmas = new ArrayList<>();
 
@@ -148,23 +120,8 @@ public class TurmaRepository {
         return turmas;
     }
 
-    public Turma findTurmaByCursoAndFuncionario(int cursoId, int funcionarioId) {
-        final String query =
-                """
-				SELECT
-					turma.codigo AS codigo,
-					turma.inicio AS inicio,
-					turma.fim AS fim,
-					turma.local AS local
-				FROM turma
-				INNER JOIN turma_participante participante
-					ON participante.turma_id = turma.codigo
-				WHERE turma.curso_id = ?
-					AND participante.funcionario_id = ?
-				GROUP BY turma.codigo
-				ORDER BY inicio DESC
-				LIMIT 1
-				""";
+    public Turma findByCursoAndFuncionario(int cursoId, int funcionarioId) throws IOException {
+        final String query = this.qf.findQuery(module, "find_by_curso_and_funcionario");
 
         Turma turma = null;
 
@@ -193,14 +150,7 @@ public class TurmaRepository {
     }
 
     public void update(int turmaId, UpdateTurmaBodyDTO body) throws Exception {
-        final String query =
-                """
-								UPDATE turma
-								SET inicio = ?,
-										fim = ?,
-										local = ?
-								WHERE codigo = ?
-				""";
+        final String query = this.qf.findQuery(module, "update");
 
         try (Connection conn = this.sqlManager.getConnection();
                 PreparedStatement pstmt = conn.prepareStatement(query); ) {
@@ -219,15 +169,8 @@ public class TurmaRepository {
     }
 
     public void delete(int turmaId) throws Exception {
-        final String queryParticipante =
-                """
-								DELETE FROM turma_participante
-								WHERE turma_id = ?
-				""";
-        final String queryTurma = """
-								DELETE FROM turma
-								WHERE codigo = ?
-				""";
+        final String queryParticipante = this.qf.findQuery(module, "delete_participante");
+        final String queryTurma = this.qf.findQuery(module, "delete_turma");
 
         try (Connection conn = this.sqlManager.getConnection();
                 PreparedStatement pstmtParticipante = conn.prepareStatement(queryParticipante);

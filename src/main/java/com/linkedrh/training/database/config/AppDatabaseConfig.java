@@ -26,8 +26,9 @@ public class AppDatabaseConfig {
         AppDatabaseConfig.user = this.env.getProperty("db.user");
         AppDatabaseConfig.passw = this.env.getProperty("db.pass");
 
+        String dbHost = this.env.getProperty("db.host");
         String dbName = this.env.getProperty("db.name");
-        AppDatabaseConfig.url = "jdbc:postgresql://127.0.0.1:5432/" + dbName;
+        AppDatabaseConfig.url = "jdbc:postgresql://" + dbHost + ":5432/" + dbName;
 
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName("org.postgresql.Driver");

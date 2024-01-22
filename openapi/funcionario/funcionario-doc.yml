@@ -1,0 +1,146 @@
+paths:
+  /funcionario:
+    post:
+      summary: Criar Funcionario
+      tags:
+        - funcionario
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateFuncionarioBody"
+      responses:
+        "201":
+          description: Criado com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  codigo:
+                    $ref: "../components.yml#/components/schemas/Codigo"
+        "400":
+          $ref: "../components.yml#/components/responses/400"
+        "500":
+          $ref: "../components.yml#/components/responses/500"
+
+  /funcionario/{funcionarioId}:
+    put:
+      summary: Atualizar Funcionario
+      tags:
+        - funcionario
+      parameters:
+        - $ref: "../components.yml#/components/parameters/funcionarioIdPath"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateFuncionarioBody"
+      responses:
+        "200":
+          description: Atualizado com sucesso
+        "400":
+          $ref: "../components.yml#/components/responses/400"
+        "500":
+          $ref: "../components.yml#/components/responses/500"
+
+  /funcionario/{funcionarioId}/ativo/{ativo}:
+    put:
+      summary: Atualizar o status de ativo do Funcionario
+      tags:
+        - funcionario
+      parameters:
+        - $ref: "../components.yml#/components/parameters/funcionarioIdPath"
+        - name: ativo
+          in: path
+          required: true
+          schema:
+            type: boolean
+      responses:
+        "200":
+          description: Atualizado com sucesso
+        "400":
+          $ref: "../components.yml#/components/responses/400"
+        "500":
+          $ref: "../components.yml#/components/responses/500"
+
+  /funcionario/turma/{turmaId}:
+    get:
+      summary: Retorna uma lista de Funcionarios da Turma informada.
+      tags:
+        - funcionario
+      parameters:
+        - $ref: "../components.yml#/components/parameters/turmaIdPath"
+      responses:
+        "200":
+          description: Atualizado com sucesso
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/FuncionarioResponseListByTurmaFuncionario"
+        "400":
+          $ref: "../components.yml#/components/responses/400"
+        "500":
+          $ref: "../components.yml#/components/responses/500"
+
+components:
+  schemas:
+    CreateFuncionarioBody:
+      required: true
+      type: object
+      properties:
+        nome:
+          type: string
+        cpf:
+          type: string
+          minLength: 11
+        cargo:
+          type: string
+        nascimento:
+          type: string
+          format: date
+        admissao:
+          type: string
+          format: date
+
+    UpdateFuncionarioBody:
+      required: true
+      type: object
+      properties:
+        nome:
+          type: string
+        cpf:
+          type: string
+        cargo:
+          type: string
+        nascimento:
+          type: string
+          format: date
+        admissao:
+          type: string
+          format: date
+
+    FuncionarioResponseListByTurmaFuncionario:
+      required: true
+      type: object
+      properties:
+        codigo:
+          $ref: "../components.yml#/components/schemas/Codigo"
+        nome:
+          type: string
+        cpf:
+          type: string
+        cargo:
+          type: string
+        nascimento:
+          type: string
+          format: date
+        admissao:
+          type: string
+          format: date
+        ativo:
+          type: boolean

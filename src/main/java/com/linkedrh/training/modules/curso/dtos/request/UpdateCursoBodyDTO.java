@@ -7,8 +7,7 @@ import java.util.List;
 
 public class UpdateCursoBodyDTO implements Validated {
 
-    public String nome;
-    public String descricao;
+    public String nome, descricao = "";
     public Integer duracao;
 
     private boolean valid = true;

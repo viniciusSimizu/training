@@ -1,0 +1,52 @@
+openapi: 3.0.0
+info:
+  title: API de treinamentos LinkedRH
+  description: API de treinamentos para gerenciar os funcionários da LinkedRH
+  version: 1.0.1
+
+servers:
+  - url: http://127.0.0.1:8080
+
+paths:
+  /curso:
+    $ref: "curso/curso-doc.yml#/paths/~1curso"
+  /curso/{cursoId}:
+    $ref: "curso/curso-doc.yml#/paths/~1curso~1{cursoId}"
+  /curso/date/range/{inicio}/{fim}:
+    $ref: "curso/curso-doc.yml#/paths/~1curso~1date~1range~1{inicio}~1{fim}"
+
+  /turma:
+    $ref: "turma/turma-doc.yml#/paths/~1turma"
+  /turma/{turmaId}:
+    $ref: "turma/turma-doc.yml#/paths/~1turma~1{turmaId}"
+  /turma/curso/{cursoId}:
+    $ref: "turma/turma-doc.yml#/paths/~1turma~1curso~1{cursoId}"
+  /turma/curso/{cursoId}/funcionario/{funcionarioId}:
+    $ref: "turma/turma-doc.yml#/paths/~1turma~1curso~1{cursoId}~1funcionario~1{funcionarioId}"
+
+  /turma/participante:
+    $ref: "participante/participante-doc.yml#/paths/~1turma~1participante"
+  /turma/participante/turma/{turmaId}/funcionario/{funcionarioId}:
+    $ref: "participante/participante-doc.yml#/paths/~1turma~1participante~1turma~1{turmaId}~1funcionario~1{funcionarioId}"
+  /turma/participante/funcionario/{funcionarioId}:
+    $ref: "participante/participante-doc.yml#/paths/~1turma~1participante~1funcionario~1{funcionarioId}"
+
+  /funcionario:
+    $ref: "funcionario/funcionario-doc.yml#/paths/~1funcionario"
+  /funcionario/{funcionarioId}:
+    $ref: "funcionario/funcionario-doc.yml#/paths/~1funcionario~1{funcionarioId}"
+  /funcionario/{funcionarioId}/ativo/{ativo}:
+    $ref: "funcionario/funcionario-doc.yml#/paths/~1funcionario~1{funcionarioId}~1ativo~1{ativo}"
+  /funcionario/turma/{turmaId}:
+    $ref: "funcionario/funcionario-doc.yml#/paths/~1funcionario~1turma~1{turmaId}"
+
+tags:
+  - name: curso
+    description: Ações de Curso
+  - name: turma
+    description: Ações de Turma
+  - name: participante
+    description: Ações de Participante
+  - name: funcionario
+    description: Ações de Funcionario
+

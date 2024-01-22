@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class CursoService {
@@ -32,36 +33,39 @@ public class CursoService {
 
     public List<CursoResponseForListCursoDTO> list() throws Exception {
         List<Curso> cursos = this.cursoRepository.list();
-        return cursos.stream().map(CursoResponseForListCursoDTO::new).toList();
+        return cursos.stream().map(CursoResponseForListCursoDTO::new).collect(Collectors.toList());
     }
 
     public List<CursoResponseForBetweenDatesCursoDTO> listBetweenDates(
             LocalDate inicio, LocalDate fim) throws Exception {
 
         List<Curso> cursos = this.cursoRepository.list();
+        List<CursoResponseForBetweenDatesCursoDTO> response = new ArrayList<>();
 
-        return cursos.stream()
-                .map(curso -> this.handleCursoResponseForBetweenDatesCurso(curso, inicio, fim))
-                .toList();
+        for (Curso curso : cursos) {
+            response.add(this.handleCursoResponseForBetweenDatesCurso(curso, inicio, fim));
+        }
+
+        return response;
     }
 
     private CursoResponseForBetweenDatesCursoDTO handleCursoResponseForBetweenDatesCurso(
-            Curso curso, LocalDate inicio, LocalDate fim) {
+            Curso curso, LocalDate inicio, LocalDate fim) throws Exception {
         CursoResponseForBetweenDatesCursoDTO cursoResponse =
                 new CursoResponseForBetweenDatesCursoDTO(curso);
+        cursoResponse.turmas = new ArrayList<>();
 
         List<Turma> turmas = this.turmaRepository.listBetweenDateRange(curso.codigo, inicio, fim);
 
-        cursoResponse.turmas =
-                turmas.stream()
-                        .map(turma -> this.handleCursoResponseForBetweenDatesTurma(turma))
-                        .toList();
+        for (Turma turma : turmas) {
+            cursoResponse.turmas.add(this.handleCursoResponseForBetweenDatesTurma(turma));
+        }
 
         return cursoResponse;
     }
 
     private CursoResponseForBetweenDatesTurmaDTO handleCursoResponseForBetweenDatesTurma(
-            Turma turma) {
+            Turma turma) throws Exception {
         CursoResponseForBetweenDatesTurmaDTO turmaResponse =
                 new CursoResponseForBetweenDatesTurmaDTO(turma);
         turmaResponse.funcionarios = new ArrayList<>();

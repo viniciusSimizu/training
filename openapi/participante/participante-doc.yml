@@ -1,0 +1,68 @@
+paths:
+  /turma/participante:
+    post:
+      summary: Criar Participante na Turma
+      tags:
+        - participante
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateParticipanteBody"
+      responses:
+        "201":
+          description: Criado com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  codigo:
+                    $ref: "../components.yml#/components/schemas/Codigo"
+        "400":
+          $ref: "../components.yml#/components/responses/400"
+        "500":
+          $ref: "../components.yml#/components/responses/500"
+
+  /turma/participante/turma/{turmaId}/funcionario/{funcionarioId}:
+    delete:
+      summary: Deletar Participante por Turma e Funcionario
+      tags:
+        - participante
+      parameters:
+        - $ref: "../components.yml#/components/parameters/turmaIdPath"
+        - $ref: "../components.yml#/components/parameters/funcionarioIdPath"
+      responses:
+        "200":
+          description: Deletado com sucesso
+        "400":
+          $ref: "../components.yml#/components/responses/400"
+        "500":
+          $ref: "../components.yml#/components/responses/500"
+
+  /turma/participante/funcionario/{funcionarioId}:
+    delete:
+      summary: Deletar Participante por Funcionario
+      tags:
+        - participante
+      parameters:
+        - $ref: "../components.yml#/components/parameters/funcionarioIdPath"
+      responses:
+        "200":
+          description: Deletado com sucesso
+        "400":
+          $ref: "../components.yml#/components/responses/400"
+        "500":
+          $ref: "../components.yml#/components/responses/500"
+
+components:
+  schemas:
+    CreateParticipanteBody:
+      required: true
+      type: object
+      properties:
+        funcionarioId:
+          $ref: "../components.yml#/components/schemas/Codigo"
+        turmaId:
+          $ref: "../components.yml#/components/schemas/Codigo"

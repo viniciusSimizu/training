@@ -1,5 +1,6 @@
 package com.linkedrh.training.modules.funcionario;
 
+import com.linkedrh.training.lib.helpers.QueryFinder;
 import com.linkedrh.training.lib.interfaces.IDatabaseManager;
 import com.linkedrh.training.modules.funcionario.dtos.request.CreateFuncionarioBodyDTO;
 import com.linkedrh.training.modules.funcionario.dtos.request.UpdateFuncionarioBodyDTO;
@@ -10,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -21,18 +23,14 @@ import java.util.List;
 @Repository
 public class FuncionarioRepository {
 
+    private final String module = "funcionario";
     final Logger log = LoggerFactory.getLogger(FuncionarioRepository.class);
 
     @Autowired private IDatabaseManager sqlManager;
+    @Autowired private QueryFinder qf;
 
     public int create(CreateFuncionarioBodyDTO body) throws Exception {
-        final String query =
-                """
-				INSERT INTO funcionario
-				(nome, cpf, nascimento, cargo, admissao)
-				VALUES (?, ?, ?, ?, ?)
-				RETURNING codigo
-				""";
+        final String query = this.qf.findQuery(module, "create");
 
         try (Connection conn = this.sqlManager.getConnection();
                 PreparedStatement pstmt = conn.prepareStatement(query); ) {
@@ -58,21 +56,13 @@ public class FuncionarioRepository {
     }
 
     public List<Funcionario> list(Boolean ativo) throws Exception {
-        StringBuilder query = new StringBuilder();
-        query.append(
-                """
-					SELECT
-						codigo, nome, cpf, nascimento, cargo, admissao, ativo
-					FROM funcionario
-				""");
+        String query = this.qf.findQuery(module, "list");
 
         if (ativo == true) {
-            query.append(" WHERE ativo = TRUE");
+            query = String.format(query, " WHERE ativo = TRUE");
         } else if (ativo == false) {
-            query.append(" WHERE ativo = FALSE");
+            query = String.format(query, " WHERE ativo = FALSE");
         }
-
-        query.append(" ORDER BY nome ASC");
 
         List<Funcionario> funcionarios = new ArrayList<>();
 
@@ -102,22 +92,8 @@ public class FuncionarioRepository {
         return funcionarios;
     }
 
-    public List<Funcionario> listByTurma(int turmaId) {
-        final String query =
-                """
-					SELECT
-						funcionario.codigo AS codigo,
-						funcionario.nome AS nome,
-						funcionario.cpf AS cpf,
-						funcionario.nascimento AS nascimento,
-						funcionario.cargo AS cargo,
-						funcionario.admissao AS admissao,
-						funcionario.ativo AS ativo
-					FROM funcionario
-					INNER JOIN turma_participante participante
-						ON participante.funcionario_id = funcionario.codigo
-					WHERE participante.turma_id = ?
-				""";
+    public List<Funcionario> listByTurma(int turmaId) throws IOException {
+        final String query = this.qf.findQuery(module, "list_by_turma");
 
         List<Funcionario> funcionarios = new ArrayList<>();
 
@@ -149,16 +125,7 @@ public class FuncionarioRepository {
     }
 
     public void update(int funcionarioId, UpdateFuncionarioBodyDTO body) throws Exception {
-        final String query =
-                """
-								UPDATE funcionario
-								SET nome = ?,
-								cpf = ?,
-								cargo = ?,
-								nascimento = ?,
-								admissao = ?
-								WHERE codigo = ?
-				""";
+        final String query = this.qf.findQuery(module, "list_by_turma");
 
         try (Connection conn = this.sqlManager.getConnection();
                 PreparedStatement pstmt = conn.prepareStatement(query); ) {
@@ -180,12 +147,7 @@ public class FuncionarioRepository {
     }
 
     public void updateAtivoField(int funcionarioId, boolean ativo) throws Exception {
-        final String query =
-                """
-								UPDATE funcionario
-								SET ativo = ?
-								WHERE codigo = ?
-				""";
+        final String query = this.qf.findQuery(module, "update_ativo");
 
         try (Connection conn = this.sqlManager.getConnection();
                 PreparedStatement pstmt = conn.prepareStatement(query); ) {

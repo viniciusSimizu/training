@@ -1,0 +1,212 @@
+paths:
+  /curso:
+    post:
+      summary: Criar Curso
+      tags:
+        - curso
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateCursoBody"
+      responses:
+        "201":
+          description: Criado com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  codigo:
+                    $ref: "../components.yml#/components/schemas/Codigo"
+        "400":
+          $ref: "../components.yml#/components/responses/400"
+        "500":
+          $ref: "../components.yml#/components/responses/500"
+
+    get:
+      summary: Retorna a lista de Cursos.
+      tags:
+        - curso
+      responses:
+        "200":
+          description: Lista de Cursos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CursoResponseForListCurso"
+        "500":
+          $ref: "../components.yml#/components/responses/500"
+
+  /curso/{cursoId}:
+    put:
+      summary: Atualizar Curso
+      tags:
+        - curso
+      parameters:
+        - $ref: "../components.yml#/components/parameters/cursoIdPath"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateCursoBody"
+      responses:
+        "200":
+          description: Atualizado com sucesso
+        "400":
+          $ref: "../components.yml#/components/responses/400"
+        "500":
+          $ref: "../components.yml#/components/responses/500"
+
+    delete:
+      summary: Deletar Curso
+      tags:
+        - curso
+      parameters:
+        - $ref: "../components.yml#/components/parameters/cursoIdPath"
+        - name: force
+          in: query
+          required: false
+          default: false
+          schema:
+            type: boolean
+      responses:
+        "200":
+          description: Deletado com sucesso
+        "400":
+          $ref: "../components.yml#/components/responses/400"
+        "500":
+          $ref: "../components.yml#/components/responses/500"
+
+  /curso/date/range/{inicio}/{fim}:
+    get:
+      summary: Listar cursos que tenham a data de inicio da Turmas entre duas datas
+      tags:
+        - curso
+      parameters:
+        - name: inicio
+          in: path
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: fim
+          in: path
+          required: true
+          schema:
+            type: string
+            format: date
+      responses:
+        "200":
+          description: Lista de Cursos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CursoResponseForBetweenDatesCurso"
+
+        "500":
+          $ref: "../components.yml#/components/responses/500"
+
+components:
+  schemas:
+    CreateCursoBody:
+      type: object
+      properties:
+        nome:
+          type: string
+          minLength: 1
+        descricao:
+          type: string
+          nullable: true
+          default: ""
+        duracao:
+          type: number
+          exclusiveMinimum: true
+          minimum: 0
+
+    UpdateCursoBody:
+      type: object
+      properties:
+        nome:
+          type: string
+          minLength: 1
+        descricao:
+          type: string
+          nullable: true
+          default: ""
+        duracao:
+          type: number
+          exclusiveMinimum: true
+          minimum: 0
+
+    CursoResponseForListCurso:
+      type: object
+      properties:
+        nome:
+          type: string
+          minLength: 1
+        duracao:
+          type: number
+          exclusiveMinimum: true
+          minimum: 0
+        quantidadeTurmas:
+          type: integer
+          minimum: 0
+        ativo:
+          type: boolean
+        dataInicioMaisProxima:
+          type: string
+          format: date
+          nullable: true
+
+    CursoResponseForBetweenDatesCurso:
+      type: object
+      properties:
+        nome:
+          type: string
+          minLength: 1
+        duracao:
+          type: number
+          exclusiveMinimum: true
+          minimum: 0
+        quantidadeTurmas:
+          type: integer
+          minimum: 0
+        ativo:
+          type: boolean
+        turmas:
+          type: array
+          items:
+            $ref: "#/components/schemas/CursoResponseForBetweenDatesTurma"
+    CursoResponseForBetweenDatesTurma:
+      type: object
+      properties:
+        codigo:
+          $ref: "../components.yml#/components/schemas/Codigo"
+        quantidadeParticipantes:
+          $ref: "../components.yml#/components/schemas/PositiveInteger"
+        inicio:
+          type: string
+          format: date
+        fim:
+          type: string
+          format: date
+        local:
+          type: string
+        funcionarios:
+          type: array
+          items:
+            $ref: "#/components/schemas/CursoResponseForBetweenDatesFuncionario"
+    CursoResponseForBetweenDatesFuncionario:
+      type: object
+      properties:
+        codigo:
+          $ref: "../components.yml#/components/schemas/Codigo"
+          nome:
+            type: string

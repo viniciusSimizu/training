@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class TurmaService {
@@ -22,12 +23,12 @@ public class TurmaService {
 
     public List<TurmaResponseForListByCursoTurmaDTO> listByCurso(int cursoId) throws Exception {
         List<Turma> turmas = this.cursoRepository.listByCurso(cursoId);
-        return turmas.stream().map(TurmaResponseForListByCursoTurmaDTO::new).toList();
+        return turmas.stream().map(TurmaResponseForListByCursoTurmaDTO::new).collect(Collectors.toList());
     }
 
     public TurmaResponseForFindByCursoAndFuncionarioDTO findByCursoAndFuncionario(
             int cursoId, int funcionarioId) throws Exception {
-        Turma turma = this.cursoRepository.findTurmaByCursoAndFuncionario(cursoId, funcionarioId);
+        Turma turma = this.cursoRepository.findByCursoAndFuncionario(cursoId, funcionarioId);
         return new TurmaResponseForFindByCursoAndFuncionarioDTO(turma);
     }
 

@@ -1,0 +1,51 @@
+components:
+  schemas:
+    Codigo:
+      type: integer
+      minimum: 1
+    PositiveInteger:
+      type: integer
+      minimum: 0
+
+  responses:
+    "400":
+      description: Request Body inválido
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              validation:
+                type: array
+                items:
+                  type: string
+    "500":
+      description: Algo deu errado na requisição
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              exception:
+                type: string
+
+  parameters:
+    cursoIdPath:
+      name: cursoId
+      in: path
+      required: true
+      schema:
+        $ref: "#/components/schemas/Codigo"
+    turmaIdPath:
+      name: turmaId
+      in: path
+      required: true
+      schema:
+        $ref: "#/components/schemas/Codigo"
+    funcionarioIdPath:
+      name: funcionarioId
+      in: path
+      required: true
+      schema:
+        $ref: "#/components/schemas/Codigo"
+
