@@ -21,63 +21,82 @@ public class ParticipanteRepository {
     private final Logger log = LoggerFactory.getLogger(ParticipanteRepository.class);
 
     @Autowired private IDatabaseManager sqlManager;
-		@Autowired private QueryFinder qf;
+    @Autowired private QueryFinder qf;
 
     public int create(CreateParticipanteBodyDTO body) throws Exception {
-			final String query = this.qf.findQuery(module, "create");
+        final String query = this.qf.findQuery(module, "create");
 
-        try (Connection conn = this.sqlManager.getConnection();
-                PreparedStatement pstmt = conn.prepareStatement(query); ) {
+        Connection conn = this.sqlManager.getConnection();
+        try (PreparedStatement pstmt = conn.prepareStatement(query); ) {
+            conn.setAutoCommit(false);
+
             pstmt.setInt(1, body.funcionarioId);
             pstmt.setInt(2, body.turmaId);
 
             ResultSet result = pstmt.executeQuery();
-            result.next();
-
+            conn.commit();
             this.log.debug(pstmt.toString());
 
+            result.next();
             int codigo = result.getInt("codigo");
             result.close();
 
             return codigo;
+
         } catch (SQLException err) {
             this.log.error(err.getMessage());
             throw new Exception("Não foi possível criar a Turma");
+
+        } finally {
+            conn.setAutoCommit(true);
+            conn.close();
         }
     }
 
     public void delete(int turmaId, int funcionarioId) throws Exception {
-			final String query = this.qf.findQuery(module, "delete");
+        final String query = this.qf.findQuery(module, "delete");
 
-        try (Connection conn = this.sqlManager.getConnection();
-                PreparedStatement pstmt = conn.prepareStatement(query); ) {
+        Connection conn = this.sqlManager.getConnection();
+        try (PreparedStatement pstmt = conn.prepareStatement(query); ) {
+            conn.setAutoCommit(false);
+
             pstmt.setInt(1, turmaId);
             pstmt.setInt(2, funcionarioId);
 
             pstmt.executeUpdate();
-
+            conn.commit();
             this.log.debug(pstmt.toString());
 
         } catch (SQLException err) {
             this.log.error(err.getMessage());
             throw new Exception("Não foi possível criar a Turma");
+
+        } finally {
+            conn.setAutoCommit(true);
+            conn.close();
         }
     }
 
     public void deleteByFuncionario(int funcionarioId) throws Exception {
-			final String query = this.qf.findQuery(module, "delete_by_funcionario");
+        final String query = this.qf.findQuery(module, "delete_by_funcionario");
 
-        try (Connection conn = this.sqlManager.getConnection();
-                PreparedStatement pstmt = conn.prepareStatement(query); ) {
+        Connection conn = this.sqlManager.getConnection();
+        try (PreparedStatement pstmt = conn.prepareStatement(query); ) {
+            conn.setAutoCommit(false);
+
             pstmt.setInt(1, funcionarioId);
 
             pstmt.executeUpdate();
-
+            conn.commit();
             this.log.debug(pstmt.toString());
 
         } catch (SQLException err) {
             this.log.error(err.getMessage());
             throw new Exception("Não foi possível criar o Funcionário");
+
+        } finally {
+            conn.setAutoCommit(true);
+            conn.close();
         }
     }
 }

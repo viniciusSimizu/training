@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -32,8 +31,10 @@ public class FuncionarioRepository {
     public int create(CreateFuncionarioBodyDTO body) throws Exception {
         final String query = this.qf.findQuery(module, "create");
 
-        try (Connection conn = this.sqlManager.getConnection();
-                PreparedStatement pstmt = conn.prepareStatement(query); ) {
+        Connection conn = this.sqlManager.getConnection();
+        try (PreparedStatement pstmt = conn.prepareStatement(query); ) {
+            conn.setAutoCommit(false);
+
             pstmt.setString(1, body.nome);
             pstmt.setString(2, body.cpf);
             pstmt.setDate(3, Date.valueOf(body.nascimento));
@@ -41,17 +42,22 @@ public class FuncionarioRepository {
             pstmt.setDate(5, Date.valueOf(body.admissao));
 
             ResultSet result = pstmt.executeQuery();
-            result.next();
-
+            conn.commit();
             this.log.debug(pstmt.toString());
 
+            result.next();
             int codigo = result.getInt("codigo");
             result.close();
 
             return codigo;
+
         } catch (SQLException err) {
             this.log.error(err.getMessage());
             throw new Exception("Não foi possível criar o Funcionário");
+
+        } finally {
+            conn.setAutoCommit(true);
+            conn.close();
         }
     }
 
@@ -83,6 +89,7 @@ public class FuncionarioRepository {
 
                 funcionarios.add(funcionario);
             }
+            result.close();
 
         } catch (SQLException err) {
             this.log.error(err.getMessage());
@@ -92,7 +99,7 @@ public class FuncionarioRepository {
         return funcionarios;
     }
 
-    public List<Funcionario> listByTurma(int turmaId) throws IOException {
+    public List<Funcionario> listByTurma(int turmaId) throws Exception {
         final String query = this.qf.findQuery(module, "list_by_turma");
 
         List<Funcionario> funcionarios = new ArrayList<>();
@@ -116,9 +123,11 @@ public class FuncionarioRepository {
 
                 funcionarios.add(funcionario);
             }
+            result.close();
 
         } catch (SQLException err) {
             this.log.error(err.getMessage());
+            throw new Exception("Não foi possível listar os Funcionários da Turma");
         }
 
         return funcionarios;
@@ -127,8 +136,10 @@ public class FuncionarioRepository {
     public void update(int funcionarioId, UpdateFuncionarioBodyDTO body) throws Exception {
         final String query = this.qf.findQuery(module, "list_by_turma");
 
-        try (Connection conn = this.sqlManager.getConnection();
-                PreparedStatement pstmt = conn.prepareStatement(query); ) {
+        Connection conn = this.sqlManager.getConnection();
+        try (PreparedStatement pstmt = conn.prepareStatement(query); ) {
+            conn.setAutoCommit(false);
+
             pstmt.setString(1, body.nome);
             pstmt.setString(2, body.cpf);
             pstmt.setString(3, body.cargo);
@@ -137,30 +148,40 @@ public class FuncionarioRepository {
             pstmt.setInt(6, funcionarioId);
 
             pstmt.executeUpdate();
-
+            conn.commit();
             this.log.debug(pstmt.toString());
 
         } catch (SQLException err) {
             this.log.error(err.getMessage());
             throw new Exception("Não foi possível atualizar o Funcionário");
+
+        } finally {
+            conn.setAutoCommit(true);
+            conn.close();
         }
     }
 
     public void updateAtivoField(int funcionarioId, boolean ativo) throws Exception {
         final String query = this.qf.findQuery(module, "update_ativo");
 
-        try (Connection conn = this.sqlManager.getConnection();
-                PreparedStatement pstmt = conn.prepareStatement(query); ) {
+        Connection conn = this.sqlManager.getConnection();
+        try (PreparedStatement pstmt = conn.prepareStatement(query); ) {
+            conn.setAutoCommit(false);
+
             pstmt.setBoolean(1, ativo);
             pstmt.setInt(2, funcionarioId);
 
             pstmt.executeUpdate();
-
+            conn.commit();
             this.log.debug(pstmt.toString());
 
         } catch (SQLException err) {
             this.log.error(err.getMessage());
             throw new Exception("Não foi possível atualizar o campo 'ativo' do Funcionário");
+
+        } finally {
+            conn.setAutoCommit(true);
+            conn.close();
         }
     }
 }

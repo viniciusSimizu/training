@@ -33,25 +33,32 @@ public class TurmaRepository {
     public int create(CreateTurmaBodyDTO body) throws Exception {
         final String query = this.qf.findQuery(module, "create");
 
-        try (Connection conn = this.sqlManager.getConnection();
-                PreparedStatement pstmt = conn.prepareStatement(query); ) {
+        Connection conn = this.sqlManager.getConnection();
+        try (PreparedStatement pstmt = conn.prepareStatement(query); ) {
+            conn.setAutoCommit(false);
+
             pstmt.setDate(1, Date.valueOf(body.inicio));
             pstmt.setDate(2, Date.valueOf(body.fim));
             pstmt.setString(3, body.local);
             pstmt.setInt(4, body.cursoId);
 
             ResultSet result = pstmt.executeQuery();
-            result.next();
-
+            conn.commit();
             this.log.debug(pstmt.toString());
 
+            result.next();
             int codigo = result.getInt("codigo");
             result.close();
 
             return codigo;
+
         } catch (SQLException err) {
             this.log.error(err.getMessage());
             throw new Exception("Não foi possível criar a Turma");
+
+        } finally {
+            conn.setAutoCommit(true);
+            conn.close();
         }
     }
 
@@ -63,8 +70,8 @@ public class TurmaRepository {
         try (Connection conn = this.sqlManager.getConnection();
                 PreparedStatement pstmt = conn.prepareStatement(query); ) {
             pstmt.setInt(1, cursoId);
-            ResultSet result = pstmt.executeQuery();
 
+            ResultSet result = pstmt.executeQuery();
             this.log.debug(pstmt.toString());
 
             while (result.next()) {
@@ -97,8 +104,8 @@ public class TurmaRepository {
             pstmt.setInt(1, cursoId);
             pstmt.setDate(2, Date.valueOf(inicio));
             pstmt.setDate(3, Date.valueOf(fim));
-            ResultSet result = pstmt.executeQuery();
 
+            ResultSet result = pstmt.executeQuery();
             this.log.debug(pstmt.toString());
 
             while (result.next()) {
@@ -129,8 +136,8 @@ public class TurmaRepository {
                 PreparedStatement pstmt = conn.prepareStatement(query); ) {
             pstmt.setInt(1, cursoId);
             pstmt.setInt(2, funcionarioId);
-            ResultSet result = pstmt.executeQuery();
 
+            ResultSet result = pstmt.executeQuery();
             this.log.debug(pstmt.toString());
 
             if (result.next()) {
@@ -152,19 +159,25 @@ public class TurmaRepository {
     public void update(int turmaId, UpdateTurmaBodyDTO body) throws Exception {
         final String query = this.qf.findQuery(module, "update");
 
-        try (Connection conn = this.sqlManager.getConnection();
-                PreparedStatement pstmt = conn.prepareStatement(query); ) {
+        Connection conn = this.sqlManager.getConnection();
+        try (PreparedStatement pstmt = conn.prepareStatement(query); ) {
+            conn.setAutoCommit(false);
+
             pstmt.setDate(1, Date.valueOf(body.inicio));
             pstmt.setDate(2, Date.valueOf(body.fim));
             pstmt.setString(3, body.local);
 
             pstmt.executeUpdate();
-
+            conn.commit();
             this.log.debug(pstmt.toString());
 
         } catch (SQLException err) {
             this.log.error(err.getMessage());
             throw new Exception("Não foi possível atualizar a Turma");
+
+        } finally {
+            conn.setAutoCommit(true);
+            conn.close();
         }
     }
 
@@ -172,24 +185,28 @@ public class TurmaRepository {
         final String queryParticipante = this.qf.findQuery(module, "delete_participante");
         final String queryTurma = this.qf.findQuery(module, "delete_turma");
 
-        try (Connection conn = this.sqlManager.getConnection();
-                PreparedStatement pstmtParticipante = conn.prepareStatement(queryParticipante);
+        Connection conn = this.sqlManager.getConnection();
+        try (PreparedStatement pstmtParticipante = conn.prepareStatement(queryParticipante);
                 PreparedStatement pstmtTurma = conn.prepareStatement(queryTurma); ) {
             conn.setAutoCommit(false);
 
             pstmtParticipante.setInt(1, turmaId);
             pstmtParticipante.executeUpdate();
-            this.log.debug(pstmtParticipante.toString());
 
             pstmtTurma.setInt(1, turmaId);
             pstmtTurma.executeUpdate();
-            this.log.debug(pstmtTurma.toString());
 
             conn.commit();
+            this.log.debug(pstmtParticipante.toString());
+            this.log.debug(pstmtTurma.toString());
 
         } catch (SQLException err) {
             this.log.error(err.getMessage());
             throw new Exception("Não foi possível deletar a Turma");
+
+        } finally {
+            conn.setAutoCommit(true);
+            conn.close();
         }
     }
 }
