@@ -43,7 +43,7 @@ public class FuncionarioController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> create(
-            @RequestHeader(name = HttpHeaders.AUTHORIZATION) String token,
+            @RequestHeader(name = HttpHeaders.AUTHORIZATION, required = false) String token,
             @RequestBody CreateFuncionarioBodyDTO body) {
 
         final String service = "criação de funcionário";
@@ -75,8 +75,8 @@ public class FuncionarioController {
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> list(
-            @RequestHeader(name = HttpHeaders.AUTHORIZATION) String token,
-            @RequestParam(name = "ativo", required = false) Boolean ativo) {
+            @RequestHeader(name = HttpHeaders.AUTHORIZATION, required = false) String token,
+            @RequestParam(name = "active", required = false) Boolean ativo) {
 
         final String service = "listagem de funcionario por status";
         LogMessageHandler.infoEndpointRegistry(service, this.log);
@@ -101,7 +101,7 @@ public class FuncionarioController {
 
     @GetMapping(path = "/turma/{turmaId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> listByTurma(
-            @RequestHeader(name = HttpHeaders.AUTHORIZATION) String token,
+            @RequestHeader(name = HttpHeaders.AUTHORIZATION, required = false) String token,
             @PathVariable int turmaId) {
 
         final String service = "listagem de funcionario por turma";
@@ -130,7 +130,7 @@ public class FuncionarioController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> update(
-            @RequestHeader(name = HttpHeaders.AUTHORIZATION) String token,
+            @RequestHeader(name = HttpHeaders.AUTHORIZATION, required = false) String token,
             @PathVariable int funcionarioId,
             @RequestBody UpdateFuncionarioBodyDTO body) {
 
@@ -162,7 +162,7 @@ public class FuncionarioController {
             path = "/{funcionarioId}/ativo/{ativo}",
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> updateAtivoField(
-            @RequestHeader(name = HttpHeaders.AUTHORIZATION) String token,
+            @RequestHeader(name = HttpHeaders.AUTHORIZATION, required = false) String token,
             @PathVariable int funcionarioId,
             @PathVariable boolean ativo) {
 

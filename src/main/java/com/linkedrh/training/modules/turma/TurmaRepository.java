@@ -169,6 +169,7 @@ public class TurmaRepository {
             pstmt.setDate(1, Date.valueOf(body.inicio));
             pstmt.setDate(2, Date.valueOf(body.fim));
             pstmt.setString(3, body.local);
+            pstmt.setInt(4, turmaId);
 
             pstmt.executeUpdate();
             conn.commit();

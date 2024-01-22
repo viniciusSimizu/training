@@ -92,6 +92,37 @@ public class CursoRepository {
         return cursos;
     }
 
+    public List<Curso> listBetweenDateRange() throws Exception {
+        final String query = this.qf.findQuery(module, "list_between_date_range");
+
+        List<Curso> cursos = new ArrayList<>();
+
+        try (Connection conn = this.sqlManager.getConnection();
+                PreparedStatement pstmt = conn.prepareStatement(query); ) {
+
+            ResultSet result = pstmt.executeQuery();
+            this.log.debug(pstmt.toString());
+
+            while (result.next()) {
+                Curso item = new Curso();
+                item.codigo = result.getInt("codigo");
+                item.nome = result.getString("nome");
+                item.duracao = result.getInt("duracao");
+                item.quantidadeTurmas = result.getInt("quantidadeTurmas");
+
+                cursos.add(item);
+            }
+
+            result.close();
+
+        } catch (Exception e) {
+            this.log.error(e.getMessage());
+            throw new Exception("Não foi possível listar os cursos");
+        }
+
+        return cursos;
+    }
+
     public void delete(int cursoId) throws Exception {
         final String queryCurso = this.qf.findQuery(module, "delete_curso");
         final String queryTurma = this.qf.findQuery(module, "delete_turma");

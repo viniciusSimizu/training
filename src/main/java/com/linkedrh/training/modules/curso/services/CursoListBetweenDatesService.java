@@ -27,7 +27,7 @@ public class CursoListBetweenDatesService {
     public List<CursoResponseForBetweenDatesCursoDTO> list(LocalDate inicio, LocalDate fim)
             throws Exception {
 
-        List<Curso> cursos = this.cursoRepository.list();
+        List<Curso> cursos = this.cursoRepository.listBetweenDateRange();
         List<CursoResponseForBetweenDatesCursoDTO> response = new ArrayList<>();
 
         for (Curso curso : cursos) {
@@ -48,6 +48,8 @@ public class CursoListBetweenDatesService {
         for (Turma turma : turmas) {
             cursoResponse.turmas.add(this.handleCursoResponseForBetweenDatesTurma(turma));
         }
+
+        cursoResponse.quantidadeTurmas = cursoResponse.turmas.size();
 
         return cursoResponse;
     }

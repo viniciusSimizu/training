@@ -12,14 +12,16 @@ public class ErrorHelper {
 
         switch (type) {
             case EXCEPTION:
-                response.put("exception", message);
+                response.put("Exception", message);
                 break;
             case VALIDATION:
-                response.put("validation", message);
+                response.put("Validation", message);
+                break;
             case AUTHORIZATION:
-                response.put("authorization", "without authorization to access endpoint");
+                response.put("Authorization", "Invalid header 'Authorization' to access endpoint");
+                break;
             default:
-                response.put("error", "Something went wrong");
+                response.put("Error", "Something went wrong");
                 break;
         }
 

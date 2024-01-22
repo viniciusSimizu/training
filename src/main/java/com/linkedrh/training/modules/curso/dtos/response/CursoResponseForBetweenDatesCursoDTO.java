@@ -15,7 +15,7 @@ public class CursoResponseForBetweenDatesCursoDTO {
     public CursoResponseForBetweenDatesCursoDTO(Curso entity) {
         this.codigo = entity.codigo;
         this.duracao = entity.duracao;
-        this.quantidadeTurmas = entity.duracao;
+        this.quantidadeTurmas = entity.quantidadeTurmas;
         this.nome = entity.nome;
     }
 

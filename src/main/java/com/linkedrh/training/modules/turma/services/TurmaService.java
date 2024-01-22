@@ -32,7 +32,10 @@ public class TurmaService {
     public TurmaResponseForFindByCursoAndFuncionarioDTO findByCursoAndFuncionario(
             int cursoId, int funcionarioId) throws Exception {
         Turma turma = this.cursoRepository.findByCursoAndFuncionario(cursoId, funcionarioId);
-        return new TurmaResponseForFindByCursoAndFuncionarioDTO(turma);
+        if (turma != null) {
+            return new TurmaResponseForFindByCursoAndFuncionarioDTO(turma);
+        }
+        return null;
     }
 
     public void update(int turmaId, UpdateTurmaBodyDTO body) throws Exception {

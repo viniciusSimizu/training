@@ -37,7 +37,7 @@ public class ParticipanteController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> create(
-            @RequestHeader(name = HttpHeaders.AUTHORIZATION) String token,
+            @RequestHeader(name = HttpHeaders.AUTHORIZATION, required = false) String token,
             @RequestBody CreateParticipanteBodyDTO body) {
 
         final String service = "criação de participante";
@@ -69,7 +69,7 @@ public class ParticipanteController {
 
     @DeleteMapping(path = "/turma/{turmaId}/funcionario/{funcionarioId}")
     public ResponseEntity<Object> delete(
-            @RequestHeader(name = HttpHeaders.AUTHORIZATION) String token,
+            @RequestHeader(name = HttpHeaders.AUTHORIZATION, required = false) String token,
             @PathVariable int turmaId,
             @PathVariable int funcionarioId) {
 
@@ -94,7 +94,7 @@ public class ParticipanteController {
 
     @DeleteMapping(path = "/funcionario/{funcionarioId}")
     public ResponseEntity<Object> delete(
-            @RequestHeader(name = HttpHeaders.AUTHORIZATION) String token,
+            @RequestHeader(name = HttpHeaders.AUTHORIZATION, required = false) String token,
             @PathVariable int funcionarioId) {
 
         final String service = "deletar participantes por funcionário";

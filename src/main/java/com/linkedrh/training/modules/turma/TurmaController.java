@@ -43,7 +43,7 @@ public class TurmaController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> create(
-            @RequestHeader(name = HttpHeaders.AUTHORIZATION) String token,
+            @RequestHeader(name = HttpHeaders.AUTHORIZATION, required = false) String token,
             @RequestBody CreateTurmaBodyDTO body) {
 
         final String service = "criação de turma";
@@ -75,7 +75,7 @@ public class TurmaController {
 
     @GetMapping(path = "/curso/{cursoId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> listByCurso(
-            @RequestHeader(name = HttpHeaders.AUTHORIZATION) String token,
+            @RequestHeader(name = HttpHeaders.AUTHORIZATION, required = false) String token,
             @PathVariable int cursoId) {
 
         final String service = "listagem de turmas por curso";
@@ -103,7 +103,7 @@ public class TurmaController {
             path = "/curso/{cursoId}/funcionario/{funcionarioId}",
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> findByCursoAndFuncionario(
-            @RequestHeader(name = HttpHeaders.AUTHORIZATION) String token,
+            @RequestHeader(name = HttpHeaders.AUTHORIZATION, required = false) String token,
             @PathVariable int cursoId,
             @PathVariable int funcionarioId) {
 
@@ -133,7 +133,7 @@ public class TurmaController {
 
     @PutMapping(path = "/{turmaId}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> create(
-            @RequestHeader(name = HttpHeaders.AUTHORIZATION) String token,
+            @RequestHeader(name = HttpHeaders.AUTHORIZATION, required = false) String token,
             @PathVariable int turmaId,
             @RequestBody UpdateTurmaBodyDTO body) {
 
@@ -163,7 +163,7 @@ public class TurmaController {
 
     @DeleteMapping(path = "/{turmaId}")
     public ResponseEntity<Object> create(
-            @RequestHeader(name = HttpHeaders.AUTHORIZATION) String token,
+            @RequestHeader(name = HttpHeaders.AUTHORIZATION, required = false) String token,
             @PathVariable int turmaId) {
 
         final String service = "deletar turma";

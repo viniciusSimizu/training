@@ -14,6 +14,8 @@ import com.linkedrh.training.modules.curso.services.CursoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.format.annotation.DateTimeFormat.ISO;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -47,7 +49,7 @@ public class CursoController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> create(
-            @RequestHeader(name = HttpHeaders.AUTHORIZATION) String token,
+            @RequestHeader(name = HttpHeaders.AUTHORIZATION, required = false) String token,
             @RequestBody CreateCursoBodyDTO body) {
 
         final String service = "criação de curso";
@@ -79,7 +81,7 @@ public class CursoController {
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> list(
-            @RequestHeader(name = HttpHeaders.AUTHORIZATION) String token) {
+            @RequestHeader(name = HttpHeaders.AUTHORIZATION, required = false) String token) {
 
         final String service = "listagem de cursos";
         LogMessageHandler.infoEndpointRegistry(service, this.log);
@@ -102,11 +104,11 @@ public class CursoController {
         return new ResponseEntity<Object>(cursos, HttpStatus.OK);
     }
 
-    @GetMapping(path = "date/range/{inicio}/{fim}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/date/range/{inicio}/{fim}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> listBetweenDates(
-            @RequestHeader(name = HttpHeaders.AUTHORIZATION) String token,
-            @PathVariable LocalDate inicio,
-            @PathVariable LocalDate fim) {
+            @RequestHeader(name = HttpHeaders.AUTHORIZATION, required = false) String token,
+            @PathVariable @DateTimeFormat(iso = ISO.DATE) LocalDate inicio,
+            @PathVariable @DateTimeFormat(iso = ISO.DATE) LocalDate fim) {
 
         final String service = "listagem de cursos entre datas";
         LogMessageHandler.infoEndpointRegistry(service, this.log);
@@ -134,7 +136,7 @@ public class CursoController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> update(
-            @RequestHeader(name = HttpHeaders.AUTHORIZATION) String token,
+            @RequestHeader(name = HttpHeaders.AUTHORIZATION, required = false) String token,
             @PathVariable int cursoId,
             @RequestBody UpdateCursoBodyDTO body) {
 
@@ -164,7 +166,7 @@ public class CursoController {
 
     @DeleteMapping(path = "/{cursoId}")
     public ResponseEntity<Object> delete(
-            @RequestHeader(name = HttpHeaders.AUTHORIZATION) String token,
+            @RequestHeader(name = HttpHeaders.AUTHORIZATION, required = false) String token,
             @PathVariable int cursoId,
             @RequestParam(name = "force", required = false, defaultValue = "false") Boolean force) {
 

@@ -65,10 +65,14 @@ public class FuncionarioRepository {
     public List<Funcionario> list(Boolean ativo) throws Exception {
         String query = this.qf.findQuery(module, "list");
 
-        if (ativo == true) {
-            query = String.format(query, " WHERE ativo = TRUE");
-        } else if (ativo == false) {
-            query = String.format(query, " WHERE ativo = FALSE");
+        if (ativo != null) {
+            if (ativo) {
+                query = String.format(query, " WHERE ativo = TRUE");
+            } else {
+                query = String.format(query, " WHERE ativo = FALSE");
+            }
+        } else {
+            query = String.format(query, "");
         }
 
         List<Funcionario> funcionarios = new ArrayList<>();
@@ -136,7 +140,7 @@ public class FuncionarioRepository {
     }
 
     public void update(int funcionarioId, UpdateFuncionarioBodyDTO body) throws Exception {
-        final String query = this.qf.findQuery(module, "list_by_turma");
+        final String query = this.qf.findQuery(module, "update");
 
         Connection conn = this.sqlManager.getConnection();
         try (PreparedStatement pstmt = conn.prepareStatement(query); ) {

@@ -1,16 +1,16 @@
 version: '1.0'
 
 services:
-  api:
-    build: .
-    container_name: training_api
-    ports:
-      - 8080:8080
-    env_file: .env
-    environment:
-      - DB_HOST=db
-    depends_on:
-      - db
+  # api:
+  #   build: .
+  #   container_name: training_api
+  #   ports:
+  #     - 8080:8080
+  #   env_file: .env
+  #   environment:
+  #     - DB_HOST=db
+  #   depends_on:
+  #     - db
 
   db:
     build: src/main/resources/db
