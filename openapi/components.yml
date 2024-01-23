@@ -15,10 +15,19 @@ components:
           schema:
             type: object
             properties:
-              validation:
+              Validation:
                 type: array
                 items:
                   type: string
+    "403":
+      description: O cabeçalho Authorization está inválido
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              Authorization:
+                type: string
     "500":
       description: Algo deu errado na requisição
       content:
@@ -26,7 +35,7 @@ components:
           schema:
             type: object
             properties:
-              exception:
+              Exception:
                 type: string
 
   parameters:
@@ -49,3 +58,7 @@ components:
       schema:
         $ref: "#/components/schemas/Codigo"
 
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer

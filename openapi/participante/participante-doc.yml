@@ -4,6 +4,8 @@ paths:
       summary: Criar Participante na Turma
       tags:
         - participante
+      security:
+        - bearerAuth: []
       requestBody:
         required: true
         content:
@@ -22,6 +24,8 @@ paths:
                     $ref: "../components.yml#/components/schemas/Codigo"
         "400":
           $ref: "../components.yml#/components/responses/400"
+        "403":
+          $ref: "../components.yml#/components/responses/403"
         "500":
           $ref: "../components.yml#/components/responses/500"
 
@@ -30,6 +34,8 @@ paths:
       summary: Deletar Participante por Turma e Funcionario
       tags:
         - participante
+      security:
+        - bearerAuth: []
       parameters:
         - $ref: "../components.yml#/components/parameters/turmaIdPath"
         - $ref: "../components.yml#/components/parameters/funcionarioIdPath"
@@ -38,6 +44,8 @@ paths:
           description: Deletado com sucesso
         "400":
           $ref: "../components.yml#/components/responses/400"
+        "403":
+          $ref: "../components.yml#/components/responses/403"
         "500":
           $ref: "../components.yml#/components/responses/500"
 
@@ -46,6 +54,8 @@ paths:
       summary: Deletar Participante por Funcionario
       tags:
         - participante
+      security:
+        - bearerAuth: []
       parameters:
         - $ref: "../components.yml#/components/parameters/funcionarioIdPath"
       responses:
@@ -53,6 +63,8 @@ paths:
           description: Deletado com sucesso
         "400":
           $ref: "../components.yml#/components/responses/400"
+        "403":
+          $ref: "../components.yml#/components/responses/403"
         "500":
           $ref: "../components.yml#/components/responses/500"
 
@@ -66,3 +78,7 @@ components:
           $ref: "../components.yml#/components/schemas/Codigo"
         turmaId:
           $ref: "../components.yml#/components/schemas/Codigo"
+
+  securitySchemes:
+    bearerAuth:
+      $ref: "../components.yml#/components/securitySchemes/bearerAuth"

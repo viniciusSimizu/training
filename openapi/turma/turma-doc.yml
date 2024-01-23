@@ -4,6 +4,8 @@ paths:
       summary: Criar Turma
       tags:
         - turma
+      security:
+        - bearerAuth: []
       requestBody:
         required: true
         content:
@@ -22,6 +24,8 @@ paths:
                     $ref: "../components.yml#/components/schemas/Codigo"
         "400":
           $ref: "../components.yml#/components/responses/400"
+        "403":
+          $ref: "../components.yml#/components/responses/403"
         "500":
           $ref: "../components.yml#/components/responses/500"
 
@@ -30,6 +34,8 @@ paths:
       summary: Atualizar Turma
       tags:
         - turma
+      security:
+        - bearerAuth: []
       parameters:
         - $ref: "../components.yml#/components/parameters/turmaIdPath"
       requestBody:
@@ -43,6 +49,8 @@ paths:
           description: Atualizado com sucesso
         "400":
           $ref: "../components.yml#/components/responses/400"
+        "403":
+          $ref: "../components.yml#/components/responses/403"
         "500":
           $ref: "../components.yml#/components/responses/500"
 
@@ -50,6 +58,8 @@ paths:
       summary: Deletar Turma
       tags:
         - turma
+      security:
+        - bearerAuth: []
       parameters:
         - $ref: "../components.yml#/components/parameters/turmaIdPath"
       responses:
@@ -57,6 +67,8 @@ paths:
           description: Deletado com sucesso
         "400":
           $ref: "../components.yml#/components/responses/400"
+        "403":
+          $ref: "../components.yml#/components/responses/403"
         "500":
           $ref: "../components.yml#/components/responses/500"
 
@@ -65,6 +77,8 @@ paths:
       summary: Retorna uma lista de Turmas pelo ID do Curso.
       tags:
         - turma
+      security:
+        - bearerAuth: []
       parameters:
         - $ref: "../components.yml#/components/parameters/cursoIdPath"
       responses:
@@ -76,6 +90,8 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/TurmaResponseForListByCursoTurma"
+        "403":
+          $ref: "../components.yml#/components/responses/403"
         "500":
           $ref: "../components.yml#/components/responses/500"
 
@@ -84,6 +100,8 @@ paths:
       summary: Encontra a Turma com base no Curso e Funcionario informados.
       tags:
         - turma
+      security:
+        - bearerAuth: []
       parameters:
         - $ref: "../components.yml#/components/parameters/cursoIdPath"
         - $ref: "../components.yml#/components/parameters/funcionarioIdPath"
@@ -94,6 +112,8 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/TurmaResponseForFindByCursoAndFuncionario"
+        "403":
+          $ref: "../components.yml#/components/responses/403"
         "500":
           $ref: "../components.yml#/components/responses/500"
 
@@ -156,3 +176,7 @@ components:
           format: date
         local:
           type: string
+
+  securitySchemes:
+    bearerAuth:
+      $ref: "../components.yml#/components/securitySchemes/bearerAuth"

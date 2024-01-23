@@ -4,32 +4,32 @@
 
 - Curso:
 
-  [X] LIST
-  [X] LIST by range of Inicio and Fim
-  [X] POST
-  [X] PUT
-  [X] DELETE
+  - [X] LIST
+  - [X] LIST by range of Inicio and Fim
+  - [X] POST
+  - [X] PUT
+  - [X] DELETE
 
 - Funcionário:
 
-  [X] POST
-  [X] PUT
-  [X] PUT campo ativo
-  [X] LIST where ativo
+  - [X] POST
+  - [X] PUT
+  - [X] PUT campo ativo
+  - [X] LIST where ativo
 
 - Turma:
 
-  [X] POST
-  [X] PUT
-  [X] DELETE
-  [X] LIST by Curso
-  [X] FIND by Curso and Funcionario
+  - [X] POST
+  - [X] PUT
+  - [X] DELETE
+  - [X] LIST by Curso
+  - [X] FIND by Curso and Funcionario
 
   - Participante:
-    [X] POST
-    [X] DELETE by Funcionario
-    [X] LIST by turma
-    [X] DELETE by Funcionario and Turma
+    - [X] POST
+    - [X] DELETE by Funcionario
+    - [X] LIST by turma
+    - [X] DELETE by Funcionario and Turma
 
 ## Data
 

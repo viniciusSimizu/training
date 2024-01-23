@@ -4,6 +4,8 @@ paths:
       summary: Criar Funcionario
       tags:
         - funcionario
+      security:
+        - bearerAuth: []
       requestBody:
         required: true
         content:
@@ -22,6 +24,29 @@ paths:
                     $ref: "../components.yml#/components/schemas/Codigo"
         "400":
           $ref: "../components.yml#/components/responses/400"
+        "403":
+          $ref: "../components.yml#/components/responses/403"
+        "500":
+          $ref: "../components.yml#/components/responses/500"
+    get:
+      summary: Retorna uma lista de Funcionarios pelo status informado.
+      tags:
+        - funcionario
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Atualizado com sucesso
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/FuncionarioResponseList"
+        "400":
+          $ref: "../components.yml#/components/responses/400"
+        "403":
+          $ref: "../components.yml#/components/responses/403"
         "500":
           $ref: "../components.yml#/components/responses/500"
 
@@ -30,6 +55,8 @@ paths:
       summary: Atualizar Funcionario
       tags:
         - funcionario
+      security:
+        - bearerAuth: []
       parameters:
         - $ref: "../components.yml#/components/parameters/funcionarioIdPath"
       requestBody:
@@ -43,6 +70,8 @@ paths:
           description: Atualizado com sucesso
         "400":
           $ref: "../components.yml#/components/responses/400"
+        "403":
+          $ref: "../components.yml#/components/responses/403"
         "500":
           $ref: "../components.yml#/components/responses/500"
 
@@ -51,6 +80,8 @@ paths:
       summary: Atualizar o status de ativo do Funcionario
       tags:
         - funcionario
+      security:
+        - bearerAuth: []
       parameters:
         - $ref: "../components.yml#/components/parameters/funcionarioIdPath"
         - name: ativo
@@ -63,6 +94,8 @@ paths:
           description: Atualizado com sucesso
         "400":
           $ref: "../components.yml#/components/responses/400"
+        "403":
+          $ref: "../components.yml#/components/responses/403"
         "500":
           $ref: "../components.yml#/components/responses/500"
 
@@ -71,11 +104,13 @@ paths:
       summary: Retorna uma lista de Funcionarios da Turma informada.
       tags:
         - funcionario
+      security:
+        - bearerAuth: []
       parameters:
         - $ref: "../components.yml#/components/parameters/turmaIdPath"
       responses:
         "200":
-          description: Atualizado com sucesso
+          description: Retorna lista de Funcionários
           content:
             application/json:
               schema:
@@ -84,6 +119,8 @@ paths:
                   $ref: "#/components/schemas/FuncionarioResponseListByTurmaFuncionario"
         "400":
           $ref: "../components.yml#/components/responses/400"
+        "403":
+          $ref: "../components.yml#/components/responses/403"
         "500":
           $ref: "../components.yml#/components/responses/500"
 
@@ -124,8 +161,7 @@ components:
           type: string
           format: date
 
-    FuncionarioResponseListByTurmaFuncionario:
-      required: true
+    FuncionarioResponseList:
       type: object
       properties:
         codigo:
@@ -144,3 +180,27 @@ components:
           format: date
         ativo:
           type: boolean
+
+    FuncionarioResponseListByTurmaFuncionario:
+      type: object
+      properties:
+        codigo:
+          $ref: "../components.yml#/components/schemas/Codigo"
+        nome:
+          type: string
+        cpf:
+          type: string
+        cargo:
+          type: string
+        nascimento:
+          type: string
+          format: date
+        admissao:
+          type: string
+          format: date
+        ativo:
+          type: boolean
+
+  securitySchemes:
+    bearerAuth:
+      $ref: "../components.yml#/components/securitySchemes/bearerAuth"
